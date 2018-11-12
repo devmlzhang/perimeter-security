@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ryoma.report.dao.DictCodeInfoDao" >
+  <resultMap id="BaseResultMap" type="com.ryoma.report.pojo.DictCodeInfo" >
+    <result column="code_type" property="codeType" jdbcType="VARCHAR" />
+    <result column="code_spieg" property="codeSpieg" jdbcType="VARCHAR" />
+    <result column="code_value" property="codeValue" jdbcType="VARCHAR" />
+    <result column="code_desc" property="codeDesc" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <select id="getAllDicts" resultMap="BaseResultMap">
+    SELECT d.* FROM t_dict_code d
+  </select>
+
+  <select id="getDictByTypeVaule" resultMap="BaseResultMap">
+    SELECT d.*
+    FROM   t_dict_code d
+    WHERE  d.code_type = #{codeType}
+    AND    d.code_value = #{codeValue}
+  </select>
+  <select id="getDicByType" resultMap="BaseResultMap">
+    SELECT
+        d.*
+    FROM
+        t_dict_code d
+    WHERE
+        d.code_type = #{codeType}
+  </select>
+
+</mapper>

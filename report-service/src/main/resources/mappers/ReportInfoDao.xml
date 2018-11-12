@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ryoma.report.dao.ReportInfoDao" >
+  <resultMap id="BaseResultMap" type="com.ryoma.report.pojo.ReportInfo" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="pro_id" property="proId" jdbcType="BIGINT" />
+    <result column="rep_const_type" property="repConstType" jdbcType="CHAR" />
+    <result column="file_name" property="fileName" jdbcType="VARCHAR" />
+    <result column="file_code" property="fileCode" jdbcType="VARCHAR" />
+    <result column="write_unit" property="writeUnit" jdbcType="VARCHAR" />
+    <result column="write_peo" property="writePeo" jdbcType="VARCHAR" />
+    <result column="check_unit" property="checkUnit" jdbcType="VARCHAR" />
+    <result column="check_status" property="checkStatus" jdbcType="CHAR" />
+    <result column="is_check" property="isCheck" jdbcType="CHAR" />
+    <result column="che_circuit" property="cheCircuit" jdbcType="CHAR" />
+    <result column="che_peo_id" property="chePeoId" jdbcType="BIGINT" />
+    <result column="che_sug" property="cheSug" jdbcType="CHAR" />
+    <result column="cre_time" property="creTime" jdbcType="TIMESTAMP" />
+    <result column="up_time" property="upTime" jdbcType="TIMESTAMP" />
+    <result column="status" property="status" jdbcType="CHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    <if test="fields == null" >
+      id, pro_id, rep_const_type, file_name, file_code, write_unit, write_peo, check_unit,
+      check_status, is_check, che_circuit, che_peo_id, che_sug, cre_time, up_time, status
+    </if>
+    <if test="fields != null" >
+      ${fields}
+    </if>
+  </sql>
+  <!--通过项目编号查询报建信息 -->
+  <select id="getAllRoports" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    r.*
+    from t_pro_rep_construct r
+    left join t_pro_info i
+    on i.pro_id = r.pro_id
+    where i.pro_code = #{proCode}
+  </select>
+  <delete id="deleteById" parameterType="java.lang.Long" >
+    delete from t_pro_rep_construct
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+
+  <insert id="insertSelective" parameterType="com.ryoma.report.pojo.ReportInfo" >
+    insert into t_pro_rep_construct
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="proId != null" >
+        pro_id,
+      </if>
+      <if test="repConstType != null" >
+        rep_const_type,
+      </if>
+      <if test="fileName != null" >
+        file_name,
+      </if>
+      <if test="fileCode != null" >
+        file_code,
+      </if>
+      <if test="writeUnit != null" >
+        write_unit,
+      </if>
+      <if test="writePeo != null" >
+        write_peo,
+      </if>
+      <if test="checkUnit != null" >
+        check_unit,
+      </if>
+      <if test="checkStatus != null" >
+        check_status,
+      </if>
+      <if test="isCheck != null" >
+        is_check,
+      </if>
+      <if test="cheCircuit != null" >
+        che_circuit,
+      </if>
+      <if test="chePeoId != null" >
+        che_peo_id,
+      </if>
+      <if test="cheSug != null" >
+        che_sug,
+      </if>
+      <if test="creTime != null" >
+        cre_time,
+      </if>
+      <if test="upTime != null" >
+        up_time,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="proId != null" >
+        #{proId,jdbcType=BIGINT},
+      </if>
+      <if test="repConstType != null" >
+        #{repConstType,jdbcType=CHAR},
+      </if>
+      <if test="fileName != null" >
+        #{fileName,jdbcType=VARCHAR},
+      </if>
+      <if test="fileCode != null" >
+        #{fileCode,jdbcType=VARCHAR},
+      </if>
+      <if test="writeUnit != null" >
+        #{writeUnit,jdbcType=VARCHAR},
+      </if>
+      <if test="writePeo != null" >
+        #{writePeo,jdbcType=VARCHAR},
+      </if>
+      <if test="checkUnit != null" >
+        #{checkUnit,jdbcType=VARCHAR},
+      </if>
+      <if test="checkStatus != null" >
+        #{checkStatus,jdbcType=CHAR},
+      </if>
+      <if test="isCheck != null" >
+        #{isCheck,jdbcType=CHAR},
+      </if>
+      <if test="cheCircuit != null" >
+        #{cheCircuit,jdbcType=CHAR},
+      </if>
+      <if test="chePeoId != null" >
+        #{chePeoId,jdbcType=BIGINT},
+      </if>
+      <if test="cheSug != null" >
+        #{cheSug,jdbcType=CHAR},
+      </if>
+      <if test="creTime != null" >
+        #{creTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="upTime != null" >
+        #{upTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=CHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ryoma.report.pojo.ReportInfo" >
+    update t_pro_rep_construct
+    <set >
+      <if test="proId != null" >
+        pro_id = #{proId,jdbcType=BIGINT},
+      </if>
+      <if test="repConstType != null" >
+        rep_const_type = #{repConstType,jdbcType=CHAR},
+      </if>
+      <if test="fileName != null" >
+        file_name = #{fileName,jdbcType=VARCHAR},
+      </if>
+      <if test="fileCode != null" >
+        file_code = #{fileCode,jdbcType=VARCHAR},
+      </if>
+      <if test="writeUnit != null" >
+        write_unit = #{writeUnit,jdbcType=VARCHAR},
+      </if>
+      <if test="writePeo != null" >
+        write_peo_id = #{writePeo,jdbcType=VARCHAR},
+      </if>
+      <if test="checkUnit != null" >
+        check_unit = #{checkUnit,jdbcType=VARCHAR},
+      </if>
+      <if test="checkStatus != null" >
+        check_status = #{checkStatus,jdbcType=CHAR},
+      </if>
+      <if test="isCheck != null" >
+        is_check = #{isCheck,jdbcType=CHAR},
+      </if>
+      <if test="cheCircuit != null" >
+        che_circuit = #{cheCircuit,jdbcType=CHAR},
+      </if>
+      <if test="chePeoId != null" >
+        che_peo_id = #{chePeoId,jdbcType=BIGINT},
+      </if>
+      <if test="cheSug != null" >
+        che_sug = #{cheSug,jdbcType=CHAR},
+      </if>
+      <if test="creTime != null" >
+        cre_time = #{creTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="upTime != null" >
+        up_time = #{upTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=CHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+</mapper>

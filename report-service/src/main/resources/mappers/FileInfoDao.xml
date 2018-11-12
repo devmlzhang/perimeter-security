@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ryoma.report.dao.FileInfoDao" >
+  <resultMap id="BaseResultMap" type="com.ryoma.report.pojo.FileInfo" >
+    <id column="file_id" property="fileId" jdbcType="BIGINT" />
+    <result column="msg_id" property="msgId" jdbcType="BIGINT" />
+    <result column="back_id" property="backId" jdbcType="VARCHAR" />
+    <result column="file_name" property="fileName" jdbcType="VARCHAR" />
+    <result column="source_type" property="sourceType" jdbcType="CHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    <if test="fields == null" >
+      file_id, msg_id, back_id, file_name, source_type
+    </if>
+    <if test="fields != null" >
+      ${fields}
+    </if>
+  </sql>
+  <select id="getFileInfos" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select f.*
+    from t_file_info f
+    left join t_pro_info p
+    on p.pro_id = f.msg_id
+    inner join t_dict_source_type t
+    on t.code_value=f.source_type
+    where p.pro_id =#{id}
+  </select>
+  <delete id="deleteFileInfoById" parameterType="java.lang.Long" >
+    delete from t_file_info
+    where file_id = #{fileId,jdbcType=BIGINT}
+  </delete>
+  <!--保存文件信息 -->
+  <insert id="saveFileInfo" parameterType="com.ryoma.report.pojo.FileInfo" >
+    insert into t_file_info
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="fileId != null" >
+        file_id,
+      </if>
+      <if test="msgId != null" >
+        msg_id,
+      </if>
+      <if test="backId != null" >
+        back_id,
+      </if>
+      <if test="fileName != null" >
+        file_name,
+      </if>
+      <if test="sourceType != null" >
+        source_type,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="fileId != null" >
+        #{fileId,jdbcType=BIGINT},
+      </if>
+      <if test="msgId != null" >
+        #{msgId,jdbcType=BIGINT},
+      </if>
+      <if test="backId != null" >
+        #{backId,jdbcType=VARCHAR},
+      </if>
+      <if test="fileName != null" >
+        #{fileName,jdbcType=VARCHAR},
+      </if>
+      <if test="sourceType != null" >
+        #{sourceType,jdbcType=CHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateFileInfoById" parameterType="com.ryoma.report.pojo.FileInfo" >
+    update t_file_info
+    <set >
+      <if test="msgId != null" >
+        msg_id = #{msgId,jdbcType=BIGINT},
+      </if>
+      <if test="backId != null" >
+        back_id = #{backId,jdbcType=VARCHAR},
+      </if>
+      <if test="fileName != null" >
+        file_name = #{fileName,jdbcType=VARCHAR},
+      </if>
+      <if test="sourceType != null" >
+        source_type = #{sourceType,jdbcType=CHAR},
+      </if>
+    </set>
+    where file_id = #{fileId,jdbcType=BIGINT}
+  </update>
+</mapper>
