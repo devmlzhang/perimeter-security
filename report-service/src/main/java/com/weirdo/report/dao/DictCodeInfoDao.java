@@ -1,6 +1,6 @@
-package com.ryoma.report.dao;
+package com.weirdo.report.dao;
 
-import com.ryoma.report.pojo.DictCodeInfo;
+import com.weirdo.report.pojo.DictCodeInfo;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.RequestParam;

@@ -1,4 +1,4 @@
-package com.ryoma.report.pojo;
+package com.weirdo.report.pojo;
 
 import java.io.Serializable;
 import java.util.Date;

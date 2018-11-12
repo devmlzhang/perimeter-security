@@ -1,7 +1,8 @@
-package com.ryoma.report.vo;
+package com.weirdo.report.model;
 
-import com.ryoma.report.pojo.FileInfo;
-import com.ryoma.report.pojo.ReportInfo;
+
+import com.weirdo.report.pojo.FileInfo;
+import com.weirdo.report.pojo.ReportInfo;
 
 import java.util.List;
 

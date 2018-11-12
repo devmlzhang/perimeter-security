@@ -1,6 +1,6 @@
-package com.ryoma.report.feign;
+package com.weirdo.report.feign;
 
-import com.ryoma.report.feign.hystrix.ReportFeignServiceHystric;
+import com.weirdo.report.feign.hystrix.ReportFeignServiceHystric;
 import com.weirdo.common.result.ResponseResult;
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.stereotype.Service;

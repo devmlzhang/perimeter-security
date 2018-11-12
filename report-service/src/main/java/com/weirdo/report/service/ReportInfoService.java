@@ -1,5 +1,7 @@
 package com.weirdo.report.service;
 
+import com.weirdo.report.model.ReportInfoModel;
+
 import java.util.List;
 
 /**
@@ -16,7 +18,7 @@ public interface ReportInfoService {
      * @param proCode
      * @return
      */
-    List<com.ryoma.report.vo.ReportInfoModel> getAllRoports(String proCode);
+    List<ReportInfoModel> getAllRoports(String proCode);
 
 
 }

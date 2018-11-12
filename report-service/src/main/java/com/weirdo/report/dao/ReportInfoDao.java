@@ -1,6 +1,6 @@
-package com.ryoma.report.dao;
+package com.weirdo.report.dao;
 
-import com.ryoma.report.pojo.ReportInfo;
+import com.weirdo.report.pojo.ReportInfo;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;

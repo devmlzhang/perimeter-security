@@ -1,4 +1,4 @@
-package com.ryoma.report.config;
+package com.weirdo.report.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

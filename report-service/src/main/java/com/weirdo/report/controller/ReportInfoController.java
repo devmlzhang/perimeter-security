@@ -1,7 +1,8 @@
-package com.ryoma.report.controller;
+package com.weirdo.report.controller;
 
-import com.ryoma.report.feign.ReportFeignService;
-import com.ryoma.report.service.ReportInfoService;
+
+import com.weirdo.report.feign.ReportFeignService;
+import com.weirdo.report.service.ReportInfoService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.poi.util.IOUtils;
