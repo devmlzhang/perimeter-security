@@ -13,7 +13,7 @@ spring:
 
 # port
 server:
-  port: 8769
+  port: 8760
 
 
 

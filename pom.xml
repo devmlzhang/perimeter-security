@@ -14,9 +14,11 @@
         <module>config-service</module>
         <module>discovery-service</module>
         <module>zipkin-service</module>
+        <module>gateway-service</module>
         <module>ui-service</module>
         <module>common</module>
-        <module>report-service</module>
+        <module>alarm-service</module>
+        <module>monitor-service</module>
     </modules>
 
     <parent>
