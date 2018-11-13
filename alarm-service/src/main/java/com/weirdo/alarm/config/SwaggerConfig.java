@@ -34,7 +34,7 @@ public class SwaggerConfig {
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title("报建管理文档接口")
+                .title("报警文档接口")
                 .version("1.0.0")
                 .license("右键保存为Json")
                 .licenseUrl("http://localhost:8766/v2/api-docs")
