@@ -11,11 +11,25 @@ spring:
        password: root
        driver-class-name: com.mysql.jdbc.Driver
 
-#mybatis
-mybatis:
-    mapper-locations: classpath:mappers/*.xml
-    type-aliases-package: com.ryoma.report.pojo
+  activemq:
+    broker-url: tcp://10.2.100.45:61616
+    user: admin
+    password: admin
 
+
+queue: mytest
+amq: tcp://10.2.100.45:61616
+
+mqtt_url: tcp://10.2.100.45:1883
+mqtt_clientId: weirdo-cliendId
+#amq过期时间,防止积压(秒)
+mqtt_expiration: 20
+
+
+#mybatis
+#mybatis:
+  #mapper-locations: classpath:mappers/*.xml
+  #type-aliases-package: com.ryoma.report.pojo
 
 #pagehelper
 pagehelper:
