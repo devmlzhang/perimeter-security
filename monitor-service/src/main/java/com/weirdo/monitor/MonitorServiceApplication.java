@@ -13,7 +13,7 @@ import org.springframework.context.annotation.ImportResource;
 @EnableFeignClients
 @EnableHystrixDashboard
 @EnableHystrix
-//@ImportResource({"classpath:config/spring_camel.xml"})
+@ImportResource({"classpath:config/spring_camel.xml"})
 public class MonitorServiceApplication {
 
     public static void main(String[] args) {
