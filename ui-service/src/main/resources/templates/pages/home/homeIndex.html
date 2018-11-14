@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+
+	<head>
+		<meta charset="UTF-8">
+		<title>欢迎页面-智慧工地运营后台管理系统-V1.0</title>
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+		<link rel="stylesheet" href="/css/font.css">
+		<link rel="stylesheet" href="/css/weadmin.css">
+		<link rel="stylesheet" href="/css/home.css">
+		<script src="/lib/echarts/echarts.min.js"></script>
+	</head>
+
+	<body>
+		<div class="weadmin-body" style="margin-top:-10px">
+			<div class="layui-fluid">
+				<div class="layui-row layui-col-space15">
+						<div class="layui-card">
+							<div class="layui-card-body">
+								<ul class="layui-row layui-col-space10 layui-this">
+									<li class="layui-col-xs2">
+										<div class="home-card-type1">
+											<span>项目累计</span><br/>
+											<span id="totalNum" th:text="${totalProjects.totalNum}"></span>
+										</div>
+									</li>
+									<li class="layui-col-xs2">
+										<div class="home-card-type2">
+											<span>在建项目</span><br/>
+											<span id="buildingNum" th:text="${totalProjects.buildingNum}"></span>
+										</div>
+									</li>
+									<li class="layui-col-xs2">
+										<div class="home-card-type3">
+											<span>完工项目</span><br/>
+											<span id="finishNum" th:text="${totalProjects.finishNum}"></span>
+										</div>
+									</li>
+									<li class="layui-col-xs2 layui-col-md2 layui-col-sm4">
+										<div class="home-card-type4">
+											<span>30天内即将到期项目</span><br/>
+											<span id="nearFinishNum" th:text="${totalProjects.nearFinishNum}"></span>
+										</div>
+									</li>
+									<li class="layui-col-xs2">
+										<div class="home-card-type5">
+											<span>失效项目</span><br/>
+											<span id="invalidNum" th:text="${totalProjects.invalidNum}"></span>
+										</div>
+									</li>
+								</ul>
+							</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="layui-col-lg12">
+				<div class="layui-col-lg6 layui-col-md6" style="padding: 5px;">
+					<!--今日项目数据-->
+					<fieldset class="layui-elem-field">
+						<div id="main-line1" style="height: 350px;"></div>
+					</fieldset>
+				</div>
+				<div class="layui-col-lg6 layui-col-md6" style="padding: 5px;">
+					<!--今日项目数据-->
+					<fieldset class="layui-elem-field">
+						<div id="main-line2" style="height: 350px;"></div>
+					</fieldset>
+				</div>
+			</div>
+
+			<div class="layui-col-lg12">
+				<div class="layui-col-lg6 layui-col-md6" style="height:500px;padding: 0 5px;">
+					<fieldset class="layui-elem-field">
+						<!--<legend>营业额</legend>-->
+						<!--<blockquote class="layui-elem-quote-home font18">营业额</blockquote>-->
+
+						<div class="layui-col-lg12" style="padding: 5px;height: 300px">
+							<div class="layui-col-lg6 layui-col-md6 layui-col-sm6" style="text-align:right;top:10px">
+								<strong style="font-size: 20px;color: #333333;">营业额</strong>
+							</div>
+							<div class="layui-col-lg6 layui-col-md6 layui-col-sm6" style="text-align:right;padding-right: 10px;padding-top: 10px">
+								<div class="layui-form-item">
+									<button class="layui-btn layui-btn-sm status-but" onclick="changeTurnover(1,this)">本周</button>
+									<button class="layui-btn layui-btn-sm layui-btn-primary status-but" onclick="changeTurnover(2,this)">月份</button>
+									<button class="layui-btn layui-btn-sm layui-btn-primary status-but" onclick="changeTurnover(3,this)">季度</button>
+								</div>
+							</div>
+							<!--<div class="layui-col-lg12">
+								<strong style="font-size: 14px;color: #333333">签约金额：</strong>
+							</div>-->
+							<div class="layui-col-lg6 layui-col-md6 layui-col-sm6" style="top:-20px;border-bottom:1px solid #e6e6e6">
+								<div id="turnoverBatchEchar" style="height: 280px;padding: 0px 5% 0 0;"></div>
+							</div>
+							<div class="layui-col-lg6 layui-col-md6 layui-col-sm6"style="top:-20px;border-bottom:1px solid #e6e6e6">
+								<div id="turnoverChannelEchar" style="height: 280px;"></div>
+							</div>
+						</div>
+						<div class="layui-col-lg12" style="height: 200px;">
+							<!--<div class="layui-col-lg12" style="top:0px">
+								<strong style="font-size: 14px;color: #333333">签约单数：</strong>
+							</div>-->
+							<div class="layui-col-lg6 layui-col-md6 layui-col-sm6">
+								<div id="signBatchEchar" style="height: 200px;padding: 0 5% 0 0;"></div>
+							</div>
+							<div class="layui-col-lg6 layui-col-md6 layui-col-sm6">
+								<div id="signChannelEchar" style="height: 200px;"></div>
+							</div>
+						</div>
+					</fieldset>
+				</div>
+				<div class="layui-col-lg6 layui-col-md6" style="height:520px;padding: 0 5px;overflow-y: hidden;overflow-x: scroll">
+					<fieldset class="layui-elem-field">
+						<div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+							<ul class="layui-tab-title">
+								<li class="layui-this">近期接入项目列表</li>
+								<li>近期接入功能列表</li>
+							</ul>
+							<div class="layui-tab-content" style="height: 430px;">
+								<div class="layui-tab-item layui-show">
+									<div id="projTable"></div>
+								</div>
+								<div class="layui-tab-item" style="width: 100%">
+									<!-- 表格 -->
+									<div id="functionTable"></div>
+								</div>
+							</div>
+						</div>
+					</fieldset>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript" src="/lib/layui/layui.js" charset="utf-8"></script>
+	<script type="text/javascript">
+		layui.extend({
+			admin: '{/}/js/admin',
+		});
+		layui.use(['jquery', 'element','util', 'admin', 'carousel','table'], function() {
+            var element = layui.element,
+                $ = layui.jquery,
+                carousel = layui.carousel,
+                util = layui.util,
+                table = layui.table,
+                admin = layui.admin;
+
+            //今日项目数据--统计图
+            $.ajax({
+                //请求方式
+                type: "GET",
+                //文件位置
+                url: "/home/getTodayProjData",
+                //返回数据格式为json,也可以是其他格式如
+                dataType: "json",
+                //请求成功后要执行的函数，拼接html
+                success: function (data) {
+                    console.log(data);
+                    setCharData(data.result.toDayList);
+                    setWeekCharData(data.result.weekList);
+                }
+            });
+
+            //营业额
+            $.ajax({
+                type: "GET",
+                url: "/home/getTurnoverData",
+                data: {params: 1},
+                dataType: "json",
+                success: function (data) {
+                    console.log(data);
+                    var batchList = data.result.batchList;
+                    setTurnoverByBatch(batchList);//销售批次营业额数据
+                    setSignByBatch(batchList);//销售批次签约单数数据
+                    var channelList = data.result.channelList;
+                    setTurnoverByChannel(channelList);//销售渠道营业额数据
+                    setSignByChannel(channelList);//销售渠道签约单数数据
+                }
+            });
+
+            //营业额状态选定
+            window.changeTurnover = function (status, v) {
+                $(".status-but").addClass("layui-btn-primary");
+                $(v).removeClass("layui-btn-primary");
+                getTurnoverData(status);
+            };
+            window.getTurnoverData = function (params) {
+                console.log(params);
+                $.ajax({
+                    type: "GET",
+                    url: "/home/getTurnoverData",
+                    data: {params: params},
+                    dataType: "json",
+                    //请求成功后要执行的函数，拼接html
+                    success: function (data) {
+                        var batchList = data.result.batchList;
+                        setTurnoverByBatch(batchList);//销售批次营业额数据
+                        setSignByBatch(batchList);//销售批次签约单数数据
+                        var channelList = data.result.channelList;
+                        setTurnoverByChannel(channelList);//销售渠道营业额数据
+                        setSignByChannel(channelList);//销售渠道签约单数数据
+                    }
+                });
+            };
+            // 项目表格表格渲染
+            var projTable = table.render({
+                elem: '#projTable'                  //指定原始表格元素选择器（推荐id选择器）
+                , url: '/home/getProjectList'
+                , method: 'get'
+                , limit: 10 //默认采用10
+                , id: 'projTable'
+               /* , height: vipTable.getFullHeight()    //容器高度*/
+                , cols: [
+                    [// 表头
+						{field: 'projCode', title: '项目编号',align: "center",minWidth:180,maxWidth:200}
+						, {field: 'projName', title: '项目名',align: "center",minWidth:200,maxWidth:250}
+						, {field: 'totalContractCost', title: '合同金额(元)',align: "center",width:120,maxWidth:150}
+						, {field: 'addressCity', title: '地区',align: "center",minWidth:100,maxWidth:150}
+						, {field: 'createTime', title: '更新时间',align: "center",minWidth:100,maxWidth:150,templet: "<div>{{layui.util.toDateString(d.ordertime, 'yyyy-MM-dd')}}</div>"}
+					]
+				]
+            });
+
+            //功能表格渲染
+            var functionTable = table.render({
+                elem: '#functionTable'                  //指定原始表格元素选择器（推荐id选择器）
+                , url: '/home/getFunctionList'
+                , method: 'get'
+                , limit: 10 //默认采用10
+                , id: 'functionTable'
+                /* , height: vipTable.getFullHeight()    //容器高度*/
+                , cols: [
+                    [//表头
+                        {field: 'projCode', title: '项目编号',align: "center",minWidth:180,maxWidth:200}
+                        , {field: 'projName', title: '项目名',align: "center",minWidth:200,maxWidth:250}
+						, {field: 'serviceName', title: '功能',align: "center"}
+                        , {field: 'payPrice', title: '合同金额(元)',align: "center"}
+                        , {field: 'addressCity', title: '地区',align: "center"}
+                        , {field: 'createTime', title: '更新时间',align: "center",templet: "<div>{{layui.util.toDateString(d.ordertime, 'yyyy-MM-dd')}}</div>"}
+                    ]
+                ]
+            });
+
+            //今日项目数据echar图数据方法
+            function setCharData(data) {
+                var dataArrery=[];
+                data.forEach(function (val) {
+                    dataArrery.push(val.num)
+                });
+                var myChart1 = echarts.init(document.getElementById('main-line1'));
+                myChart1.setOption({
+                    title: {
+                        text: '今日项目数据',
+                        x:'center',
+                        top:'10px',
+                        textAlign:'left'
+                    },
+                    tooltip: {
+                        trigger: 'axis',
+                        axisPointer: {
+                            type: 'cross'
+                        }
+                    },
+                    grid: {
+                        left: '3%',
+                        right: '4%',
+                        bottom: '3%',
+                        containLabel: true
+                    },
+                    yAxis: [{
+                        axisTick: {
+                            show: false
+                        },
+                        axisLine: {
+                            show: false,
+                        },
+                        itemStyle: {
+                            normal: {
+                                color: '#d7d7d7'
+                            }
+                        },
+                        type: 'category',
+                        position: 'left',
+                        interval: 0,
+                        data: ['完工项目', '试用项目','失效项目','30天内即将\n\n到期项目','新建项目']
+                    }],
+                    xAxis: [{
+                        show: false,
+                        axisTick: {
+                            show: false
+                        },
+                        type: 'value',
+                        // name: '检查批次数',
+                        // inverse: true,
+                        axisLine: {
+                            show: false,
+                        },
+                    }],
+                    series: [{
+                        // name: '检查次数',
+                        align: 'left',
+                        type: 'bar',
+                        itemStyle: {
+                            normal: {
+                                color: '#d7d7d7'
+                            }
+                        },
+                        barWidth: '30',
+                        label: {
+                            normal: {
+                                show: true,
+                                position: 'right',
+                                textStyle: {
+                                    color: '#283139'
+                                }
+                            }
+                        },
+                        data:dataArrery
+                    }
+                    ]
+                });
+            }
+
+            //本周项目数据
+            function setWeekCharData(data) {
+                var dataArrery=[];
+                data.forEach(function (val) {
+                    dataArrery.push(val.num)
+                });
+                var myChart2 = echarts.init(document.getElementById('main-line2'));
+                // 使用刚指定的配置项和数据显示图表。
+                myChart2.setOption({
+                    title: {
+                        text: '本周项目数据',
+                        x: 'center',
+                        top: '10px',
+                        textAlign: 'left'
+                    },
+                    tooltip: {
+                        trigger: 'axis',
+                        axisPointer: {
+                            type: 'cross'
+                        }
+                    },
+                    /*legend: {
+                    right: '30',
+                    data: ['检查次数']
+
+                },*/
+                    grid: {
+                        left: '3%',
+                        right: '4%',
+                        bottom: '3%',
+                        containLabel: true
+                    },
+                    yAxis: [{
+                        axisTick: {
+                            show: false
+                        },
+                        axisLine: {
+                            show: false,
+                        },
+                        /*axisLabel: {
+                        color: '#969cd6',
+                        fontWeight :'bold',
+                        fontSize: 16,
+                    },*/
+                        itemStyle: {
+                            normal: {
+                                color: '#d7d7d7'
+                            }
+                        },
+                        type: 'category',
+                        position: 'left',
+                        interval: 0,
+                        data: ['完工项目', '试用项目', '失效项目', '30天内即将\n\n到期项目', '新增项目']
+
+                    }],
+
+                    xAxis: [{
+                        show: false,
+                        axisTick: {
+                            show: false
+                        },
+                        type: 'value',
+                        name: '检查批次数',
+                        // inverse: true,
+                        axisLine: {
+                            show: false,
+                        },
+
+
+                    }],
+                    series: [{
+                        name: '检查次数',
+                        align: 'left',
+                        type: 'bar',
+                        itemStyle: {
+                            normal: {
+                                color: '#d7d7d7'
+                            }
+                        },
+                        barWidth: '30',
+                        label: {
+                            normal: {
+                                show: true,
+                                position: 'right',
+                                textStyle: {
+                                    color: '#283139'
+                                }
+                            }
+                        },
+                        data: dataArrery
+                    }
+                    ]
+                });
+            }
+			//营业额--销售批次统计图
+         	function setTurnoverByBatch(data) {
+                var dataArrery = [];
+                var nameaArrery = [];
+                data.forEach(function (val) {
+                    dataArrery.push(val.TurnoverNum);
+                    nameaArrery.push(val.batchName);
+                });
+                var turnoverBatchEchar = echarts.init(document.getElementById('turnoverBatchEchar'));
+                turnoverBatchEchar.setOption({
+                    title: {
+                        text: '签约金额：',
+                        textAlign: 'left',
+                        textStyle:{
+                            fontSize:'14'
+                        }
+                    },
+                    tooltip: {
+                        trigger: 'axis',
+                        axisPointer: {
+                            type: 'cross'
+                        }
+                    },
+                    grid: {
+                        left: '3%',
+                        right: '4%',
+                        bottom: '3%',
+                        containLabel: true
+                    },
+                    xAxis: [{
+                        axisTick: {
+                            show: false
+                        },
+                        axisLine: {
+                            show: false,
+                        },
+                        itemStyle: {
+                            normal: {
+                                color: '#d7d7d7'
+                            }
+                        },
+                        type: 'category',
+                        interval: 0,
+                        data: nameaArrery
+                    }],
+                    yAxis: [{
+                        show: false,
+                        axisTick: {
+                            show: false
+                        },
+                        type: 'value',
+                        axisLine: {
+                            show: false,
+                        },
+                    }],
+                    series: [{
+                        align: 'left',
+                        type: 'bar',
+                        itemStyle: {
+                            normal: {
+                                color: '#d7d7d7'
+                            }
+                        },
+                        barWidth: '40',
+                        label: {
+                            normal: {
+                                show: true,
+                                position: 'top',
+                                textStyle: {
+                                    color: '#283139'
+                                }
+                            }
+                        },
+                        data: dataArrery
+                    }
+                    ]
+                });
+            }
+
+                //营业额--销售渠道统计图
+			function setTurnoverByChannel(data) {
+				var dataArrery = [];
+				var nameaArrery = [];
+				data.forEach(function (val) {
+					dataArrery.push(val.TurnoverNum);
+					nameaArrery.push(val.batchName);
+				});
+				var turnoverChannelEchar = echarts.init(document.getElementById('turnoverChannelEchar'));
+				turnoverChannelEchar.setOption({
+					tooltip: {
+						trigger: 'axis',
+						axisPointer: {
+							type: 'cross'
+						}
+					},
+					grid: {
+						left: '3%',
+						right: '4%',
+						bottom: '3%',
+						containLabel: true
+					},
+					xAxis: [{
+						axisTick: {
+							show: false
+						},
+						axisLine: {
+							show: false,
+						},
+						itemStyle: {
+							normal: {
+								color: '#d7d7d7'
+							}
+						},
+						type: 'category',
+						interval: 0,
+						data: nameaArrery
+					}],
+					yAxis: [{
+						show: false,
+						axisTick: {
+							show: false
+						},
+						type: 'value',
+						axisLine: {
+							show: false,
+						},
+					}],
+					series: [{
+						align: 'left',
+						type: 'bar',
+						itemStyle: {
+							normal: {
+								color: '#d7d7d7'
+							}
+						},
+						barWidth: '40',
+						label: {
+							normal: {
+								show: true,
+								position: 'top',
+								textStyle: {
+									color: '#283139'
+								}
+							}
+						},
+						data: dataArrery
+					}
+					]
+				});
+			}
+
+			//签约单数--销售批次统计图
+			function setSignByBatch(data) {
+				var dataArrery = [];
+				var nameaArrery = [];
+				data.forEach(function (val) {
+					dataArrery.push(val.signNum);
+					nameaArrery.push(val.batchName);
+				});
+				var signBatchEchar = echarts.init(document.getElementById('signBatchEchar'));
+				signBatchEchar.setOption({
+                    title: {
+                        text: '签约单数：',
+                        top: '30px',
+                        textAlign: 'left',
+                        textStyle:{
+                            fontSize:'14'
+						}
+                    },
+					tooltip: {
+						trigger: 'axis',
+						axisPointer: {
+							type: 'cross'
+						}
+					},
+					/*legend: {
+					right: '30',
+					data: ['检查次数']
+
+				},*/
+					grid: {
+						left: '3%',
+						right: '4%',
+						bottom: '3%',
+						containLabel: true
+					},
+					yAxis: [{
+						axisTick: {
+							show: false
+						},
+						axisLine: {
+							show: false,
+						},
+						/*axisLabel: {
+						color: '#969cd6',
+						fontWeight :'bold',
+						fontSize: 16,
+					},*/
+						itemStyle: {
+							normal: {
+								color: '#d7d7d7'
+							}
+						},
+						type: 'category',
+						position: 'left',
+						interval: 0,
+						data: nameaArrery
+
+					}],
+
+					xAxis: [{
+						show: false,
+						axisTick: {
+							show: false
+						},
+						type: 'value',
+						name: '检查批次数',
+						// inverse: true,
+						axisLine: {
+							show: false,
+						},
+
+
+					}],
+					series: [{
+						name: '检查次数',
+						align: 'left',
+						type: 'bar',
+						itemStyle: {
+							normal: {
+								color: '#d7d7d7'
+							}
+						},
+						barWidth: '30',
+						label: {
+							normal: {
+								show: true,
+								position: 'right',
+								textStyle: {
+									color: '#283139'
+								}
+							}
+						},
+						data: dataArrery
+					}
+					]
+				});
+			}
+
+			//签约单数--销售渠道统计图
+			function setSignByChannel(data) {
+				var dataArrery = [];
+				var nameaArrery = [];
+				data.forEach(function (val) {
+					dataArrery.push(val.signNum);
+					nameaArrery.push(val.batchName);
+				});
+				var signChannelEchar = echarts.init(document.getElementById('signChannelEchar'));
+				signChannelEchar.setOption({
+					tooltip: {
+						trigger: 'axis',
+						axisPointer: {
+							type: 'cross'
+						}
+					},
+					/*legend: {
+					right: '30',
+					data: ['检查次数']
+
+				},*/
+					grid: {
+						left: '3%',
+						right: '4%',
+						bottom: '3%',
+						containLabel: true
+					},
+					yAxis: [{
+						axisTick: {
+							show: false
+						},
+						axisLine: {
+							show: false,
+						},
+						/*axisLabel: {
+						color: '#969cd6',
+						fontWeight :'bold',
+						fontSize: 16,
+					},*/
+						itemStyle: {
+							normal: {
+								color: '#d7d7d7'
+							}
+						},
+						type: 'category',
+						position: 'left',
+						interval: 0,
+						data: nameaArrery
+
+					}],
+
+					xAxis: [{
+						show: false,
+						axisTick: {
+							show: false
+						},
+						type: 'value',
+						name: '检查批次数',
+						// inverse: true,
+						axisLine: {
+							show: false,
+						},
+
+
+					}],
+					series: [{
+						name: '检查次数',
+						align: 'left',
+						type: 'bar',
+						itemStyle: {
+							normal: {
+								color: '#d7d7d7'
+							}
+						},
+						barWidth: '30',
+						label: {
+							normal: {
+								show: true,
+								position: 'right',
+								textStyle: {
+									color: '#283139'
+								}
+							}
+						},
+						data: dataArrery
+					}
+					]
+				});
+
+			}
+
+		});
+	</script>
+
+</html>

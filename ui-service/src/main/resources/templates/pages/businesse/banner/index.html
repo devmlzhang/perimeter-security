@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>layui</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="/lib/layui/css/layui.css">
+    <style>
+        .layui-upload .mark_button {
+            position: absolute;
+            right: 15px;
+        }
+
+        .upload-img {
+            position: relative;
+            display: inline-block;
+            width: 212px;
+            height: 160px;
+            margin: 0 10px 10px 0;
+            transition: box-shadow .25s;
+           /* border-radius: 4px;
+            box-shadow: 0px 10px 10px -5px rgba(0, 0, 0, 0.5);
+            transition: 0.25s;
+            -webkit-transition: 0.25s;*/
+            margin-top: 15px;
+            border: #cccccc 1px solid;
+        }
+
+        .layui-upload-img {
+            width: 212px;
+            height: 160px;
+          /*  border-radius: 4px;*/
+        }
+
+       /* .upload-img:hover {
+            !*cursor: pointer;*!
+            box-shadow: 0 0 4px rgba(0,0,0,1);
+            transform: scale(1.2);
+            -webkit-transform: scale(1.05);
+        }
+*/
+        .upload-img span {
+            position: absolute;
+            right: 0px;
+            top: 0px;
+            font-size: 20px;
+            font-weight: bold;
+            background: #FFF;
+            cursor: pointer;
+        }
+        span.delete-img{
+            position: absolute;
+            right: 0px;
+            top: 0px;
+            font-size: 20px;
+            font-weight: bold;
+            background: #FFF;
+            cursor: pointer;
+        }
+
+        .upload-img button {
+            position: absolute;
+            right: 0px;
+            top: 0px;
+            border-radius: 6px;
+        }
+
+        .upload-market-index {
+            position: relative;
+            display: inline-block;
+            width: 212px;
+            height: 160px;
+            margin: 0px 20px 20px 0;
+            transition: box-shadow .25s;
+            border-radius: 4px;
+            /*box-shadow: 0px 10px 10px -5px rgba(0, 0, 0, 0.5);*/
+            /*  transition: 0.25s;
+              -webkit-transition: 0.25s;*/
+            margin-top: 25px;
+            border: #cccccc 1px solid;
+            text-align: center;
+            cursor: pointer;
+        }
+        .upload-market-index-span{
+            margin:20px;
+        }
+
+
+        .upload-button {
+            position: relative;
+            display: inline-block;
+            width: 90%;
+            height: 200px;
+            margin: 0px 20px 20px 0;
+            transition: box-shadow .25s;
+            border-radius: 4px;
+            /*box-shadow: 0px 10px 10px -5px rgba(0, 0, 0, 0.5);*/
+            /*  transition: 0.25s;
+              -webkit-transition: 0.25s;*/
+            margin-top: 25px;
+            border: #cccccc 1px solid;
+            text-align: center;
+            cursor: pointer;
+        }
+        .banner-img{
+            width: 100%;
+            height: 100%;
+        }
+        .upload-button-span{
+            margin:30px;
+        }
+
+        .layui-icon {
+            font-size: 50px;
+            color: #009688;
+        }
+        p.banner-label{
+            font-size: 20px;
+            font-weight: bold;
+
+        }
+        .span-bottom{
+            margin-bottom: 0px;
+            text-align: center;
+        }
+
+    </style>
+</head>
+
+<body>
+<shiro:hasPermission name="sys:businesseBanner">
+<div class="weadmin-body" style="padding: 20px">
+<div class="businesse-home">
+    <div class="layui-carousel" id="test1">
+        <div carousel-item id="imgList">
+        </div>
+    </div>
+</div>
+
+
+<div class="layui-upload ">
+    <div class="layui-row">
+        <div class="layui-upload-list" id="imgs" style="float: left">
+        </div>
+        <div class="upload-market-index" id="sele_imgs">
+            <div class="upload-market-index-span">
+                <i class="layui-icon"></i>
+                <p>上传模块</p>
+                <p>BANNER</p>
+            </div>
+            <p class="span-bottom">尺寸：1386X452</p>
+        </div>
+    </div>
+
+    <div th:each="v:${marketFunctionList}">
+        <div class="layui-col-lg3 layui-col-md4 layui-col-sm6">
+            <p class="banner-label" th:text="${v.name}"></p>
+            <div class="upload-button" th:id="${v.id}" onclick="imgClick(this)" th:if="${v.fileId==null}">
+                <div class="upload-button-span">
+                    <i class="layui-icon"></i>
+                    <p>上传模块</p>
+                    <p>BANNER</p>
+                </div>
+                <p class="span-bottom">尺寸：1600X452</p>
+            </div>
+            <div class="upload-button" style="display: none"  th:id="${v.id}" onclick="imgClick(this)">
+                <div class="upload-button-span">
+                    <i class="layui-icon"></i>
+                    <p>上传模块</p>
+                    <p>BANNER</p>
+                </div>
+                <p class="span-bottom">尺寸：1600X452</p>
+            </div>
+            <div class="upload-button" th:if="${v.fileId !=null}" th:id="imgage+(${v.id})">
+                <span class="delete-img" th:onclick="|javascript:deleteImg('${v.id}')|">删除</span>
+                <img class="banner-img" th:src="@{${uploadFileUrlConfig}+'/down'(fid=${v.fileId})}" alt="图片不存在">
+
+               <!-- @{/img/research/{filename}(filename=${research.filename})}-->
+            </div>
+            <div class="upload-button" style="display: none" th:id="img+(${v.id})">
+                <span class="delete-img" th:onclick="|javascript:deleteImg('${v.id}')|">删除</span>
+                <img class="banner-img" src=" " alt="图片不存在">
+            </div>
+        </div>
+
+    </div>
+    <button style="display: none" id="indexImgUpload"/>
+    <button style="display: none" id="imgupload"/>
+
+</div>
+</div>
+
+<script type="text/javascript" src="/lib/layui/layui.js"></script>
+
+<script id="img_template" type="text/html" >
+    <div class="upload-img" filename="{{ d.fileName }}">
+        <span onclick="deleteOneImage()">删除</span>
+        <img src="{{d.src}}" alt="图片不存在" class="layui-upload-img">
+    </div>
+</script>
+
+<script th:inline="javascript">
+    var uploadFileUrlConfig=[[${uploadFileUrlConfig}]];
+    // uploadFileUrlConfig="http://10.2.100.17:8060/zuul/api/file";
+    console.log("uploadFileUrlConfig");
+    console.log(uploadFileUrlConfig);
+</script>
+
+
+<script>
+
+    layui.use(['upload', 'laytpl', 'form','carousel'], function () {
+        var $ = layui.jquery
+            , upload = layui.upload
+            , laytpl = layui.laytpl
+            , form = layui.form
+            ,carousel = layui.carousel;
+        var marketIndexImage=[];
+        var marketIndexImageLength;
+        var projId="123456789123";//项目id,上传图片中项目id不能为空
+        var projectId="";//关联图片业务id
+        //获取商城首页图片
+        window.getMarketIndexImage=function (){
+            $.ajax({
+                type: "GET",
+                url: "/businesse/banner/getMarketIndexImage",
+                dataType: "json",
+                //请求成功后要执行的函数，拼接html
+                success: function (data) {
+                    marketIndexImage=data.result;
+                    marketIndexImageLength=marketIndexImage.length;
+                    $("#imgs").empty();
+                    $("#imgList").empty();
+                    marketIndexImage.forEach(function (value) {
+                        value.src=uploadFileUrlConfig+"/down?fid="+value.fileId;
+                       //商城首页图片列表展示
+                        $('#imgs').append(
+                            '<div class="upload-img" filename="'+
+                            value.fileName+'">'+
+                            '<span onclick="deleteOneImage('+"'"+value.fileId+"'"+')">删除</span>'+
+                            '<img src="'+value.src+'" alt="图片不存在" class="layui-upload-img">'+
+                            '</div>'
+                        );
+                        //商城首页图片列轮播图图片
+                        $('#imgList').append(
+                            '<img src="'+value.src+'" alt="图片不存在" class="layui-upload-img">'
+                        )
+                    });
+                    //轮播图展示
+                    carousel.render({
+                        elem: '#test1'
+                        ,width: '1386' //设置容器宽度
+                        ,arrow: 'always' //始终显示箭头
+                        ,height:'452px'
+                        //,anim: 'updown' //切换动画方式
+                    });
+
+                }
+            });
+        };
+
+        $('#sele_imgs').click(function () {
+            if(marketIndexImageLength>=5){
+                layer.alert('最多只能添加5张图片！');
+                return true;
+            }else {
+                $("#indexImgUpload").click();
+            }
+        });
+        //上传商城首页index图片上传
+        window.uploadMarketIndexImage=function () {
+                var uploadInst = upload.render({
+                    elem: '#indexImgUpload'
+                    ,url: uploadFileUrlConfig+"/upload/"
+                    , size: 1386 * 452
+                    ,data: {'projId':projId}
+                    ,before: function(obj){
+                        //预读本地文件示例，不支持ie8
+                        obj.preview(function(index, file, result){
+                            var data = {
+                                fileName: file.name,
+                                src: result
+                            };
+                            //将预览html 追加
+                            laytpl(img_template.innerHTML).render(data, function (html) {
+                                $('#imgs').append(html);
+                            });
+
+                        });
+                    }
+                    ,done: function(res){
+                        console.log(res);
+                        if(parseInt(res.errcode)==200){
+                            //上传成功，业务关联数据入库
+                            addMarketIndexImage(res.result[0]);
+                        }else {
+                            return layer.msg("上传失败"+res.errmsg);
+                        }
+                    }
+                    ,error: function(){
+                        //演示失败状态，并实现重传
+                        var demoText = $('#demoText');
+                        demoText.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-xs demo-reload">重试</a>');
+                        demoText.find('.demo-reload').on('click', function(){
+                            uploadInst.upload();
+                        });
+                    }
+                })
+
+        };
+
+        getMarketIndexImage();
+        uploadMarketIndexImage();//上传商城首页index图片上传
+
+        //上传图片提交业务
+        window.addMarketIndexImage=function(data){
+            var params =JSON.stringify(data);
+            $.ajax({
+                url:"/businesse/banner/addMarketIndexImage",
+                dataType:"json",
+                contentType: "application/json; charset=utf-8",
+                type:"post",
+                data:params,
+                success:function(res) {
+                   console.log(res);
+                   if(parseInt(res.errcode)==0){
+                       return layer.msg(res.errmsg);
+                   }else {
+                       return layer.msg("上传失败"+res.errmsg);
+                   }
+                }
+            });
+        };
+
+
+        //删除 单击事件
+        window.deleteOneImage=function(data){
+            console.log(data);
+            $.post("/businesse/banner/deleteOneImage",{"fileId":data},function (res) {
+                console.log(res);
+            });
+            getMarketIndexImage();
+
+        };
+        //点击上传按钮，调用上传方法
+        window.imgClick=function(v){
+            var id=$(v).attr("id");
+            projectId=id;
+            $("#imgupload").click();
+        };
+        //删除banner 图片
+        window.deleteImg=function(v){
+            console.log(v);
+            projectId=v;
+            $("#img"+projectId).hide();
+            $("#imgage"+projectId).hide();
+            $("#"+projectId).show();
+            $.post("/businesse/banner/deleteBannerImage",{"relId":projectId},function (res) {
+                console.log(res);
+            });
+        };
+        //上传banner图片到服务器
+        window.uploadFunctionImg=function () {
+            var uploadInst = upload.render({
+                elem: "#imgupload",
+                url: uploadFileUrlConfig+"/upload/",
+                data: {'projId':projId},
+                size: 1600 * 452,
+                before: function(obj){
+                    var data={'projId':projectId};
+                    this.data=data;
+                    obj.preview(function(index, file, result){
+                        $("#img"+projectId).find("img").attr("src",result);
+                        $("#"+projectId).hide();
+                        $("#img"+projectId).show();
+                    });
+                },
+                done: function(res){
+                    if(res.errcode != 200){
+                        return layer.msg('上传失败'+res.errmsg);
+                    }else{
+                        var params=res.result[0];
+                        params.relId=projectId;
+                        addBannerImage(params);//上传banner图片提交业务
+                        return layer.msg(res.errmsg);
+                    }//成功
+                },error: function(){
+
+                }
+            });
+        };
+
+        //上传banner图片提交业务
+        window.addBannerImage=function(data){
+            var params =JSON.stringify(data);
+            $.ajax({
+                url:"/businesse/banner/addBannerImage",
+                dataType:"json",
+                contentType: "application/json; charset=utf-8",
+                type:"post",
+                data:params,
+                success:function(res) {
+                    console.log(res);
+                    if(parseInt(res.errcode)==0){
+                        // getMarketIndexImage();
+                        return layer.msg(res.errmsg);
+                    }else {
+                        return layer.msg("上传失败"+res.errmsg);
+                    }
+                }
+            });
+        };
+
+        uploadFunctionImg();
+
+    });
+
+
+</script>
+</shiro:hasPermission>
+</body>
+
+</html>

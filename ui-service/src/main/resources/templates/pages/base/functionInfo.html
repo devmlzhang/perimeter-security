@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>统计图表-WeAdmin Frame型后台管理系统-WeAdmin 1.0</title>
+        <meta name="renderer" content="webkit|ie-comp|ie-stand">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+        <meta http-equiv="Cache-Control" content="no-siteapp" />
+        <link rel="stylesheet" href="/css/font.css">
+        <link rel="stylesheet" href="/css/weadmin.css">
+    </head>
+    <body class="childrenBody">
+    <div id="functions">
+    <form  class="layui-form " lay-filter="functions" action="">
+        <div class="layui-form-item">
+            <label class="layui-form-label">功能明细</label>
+            <div class="layui-input-inline" style="width: 255px;margin-top: 10px">
+                <input type="tel" id="serviceName"  name="serviceName"  autocomplete="off" class="layui-input">
+                <input type="hidden" id="id" name="id"  autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-row">
+            <div class="magb15 layui-col-md4 layui-col-xs12">
+            <label class="layui-form-label">版本</label>
+                <div id="version" class="layui-input-block versions">
+                <input type="radio" name="serviceType" value="1" title="应用市场" checked>
+                <input type="radio" name="serviceType" value="2" title="标准版" >
+                <input type="radio" name="serviceType" value="3" title="基础版" >
+            </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">规格</label>
+            <div class="layui-input-block" style="width: 255px">
+                <input type="text" id="standard"  name="standard" lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">服务编码</label>
+            <div class="layui-input-inline" style="width: 255px">
+                <input type="text" id="serviceCode"  name="serviceCode" lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">价格(元)</label>
+            <div class="layui-input-inline" style="width: 255px">
+                <input type="text" id="price" name="price"  placeholder="请输入" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block" style="margin-top: 20px;position: center">
+                <button class="layui-btn" lay-submit="" lay-filter="functionSubmit">确定</button>
+            </div>
+        </div>
+    </form>
+    </div>
+    <script type="text/javascript" src="/lib/layui/layui.js"></script>
+    <script type="text/javascript" src="/js/base/base.js"></script>
+    </body>
+</html>

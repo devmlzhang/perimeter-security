@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>商城菜单管理列表</title>
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+		<link rel="stylesheet" href="/css/font.css">
+		<link rel="stylesheet" href="/css/weadmin.css">
+		<style>
+			 table{width: 100%;}
+			tr{cursor: pointer}
+			.pull-left {float:left;margin-left:20px;}
+			.pull-right{float:right;margin-right:20px;}
+			.clear{clear:both}
+			.hide{display:none}
+			.item_buts{width:160px;margin:10px auto}
+			.proj-img{cursor:pointer; border:1px solid #ccc;width:60px;border-radius:4px;height:60px;line-height: 60px;text-align: center;font-size: 12px;font-family: "宋体";}
+		</style>
+	</head>
+	<body>
+		<div class="weadmin-body">
+			<div class="layui-row">
+			<shiro:hasPermission name="sys:businesseMenuAdd">
+				<button class="layui-btn layui-btn-sm" onclick="addMenuBut(null,null)"><i class="layui-icon"></i>新增菜单</button>
+			</shiro:hasPermission>
+			</div>
+			<table class="layui-table layui-form"  id="itemsBody"></table>
+		</div>
+		
+		<!-- 新增功能内容 -->
+		<div id="addFunctionContent" class="hide">
+			<br>
+			<form class="layui-form">
+				<input type="hidden" name="id" id="keyId" value="">
+				<input type="hidden" name="parentId" id="parentId" value="0">
+				<input type="hidden" name="level" value="1" id="level">
+				<input type="hidden" name="functionId" value="" id="functionId">
+				<input type="hidden" name="version" value="3">
+				<div class="layui-form-item">
+					<label  class="layui-form-label"><span class="we-red icon-center">*</span>菜单名称：</label>
+					<div class="layui-input-block" style="width:66%">
+						<input type="text" id="addMenuName"  name="name" required="" lay-verify="required"  class="layui-input">
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label  class="layui-form-label"><span class="we-red icon-center">*</span>菜单顺序：</label>
+					<div class="layui-input-block" style="width:66%">
+						<input type="text" id="addMenuSort" name="sort" required="" lay-verify="required|num" value="1" class="layui-input" >
+					</div>
+				</div>
+				<div class="layui-form-item" id="menuImgs">
+					<label  class="layui-form-label"><span class="we-red icon-center">*</span>菜单图片：</label>
+					<div class="layui-input-block">
+						<div id="uploadmenuImg" class="proj-img">图片</div>
+		              	<img id="menuImg" class="proj-img" style="display:none">
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label  class="layui-form-label"><span class="we-red icon-center">*</span>个人中心图片：</label>
+					<div class="layui-input-block">
+						<div id="uploadpersonImg" class="proj-img">图片</div>
+		              	<img id="personImg" class="proj-img" style="display:none">
+					</div>
+				</div>
+				<button id="sureFormInfo" hidden="hidden" lay-submit="" lay-filter="sureAdd"></button>
+			</form>
+				<div class="item_buts">
+ 					<button class="layui-btn layui-btn-sm layui-btn-primary" onclick="cancleTop()">取消</button>
+ 					<button class="layui-btn layui-btn-sm layui-btn-normal"  onclick="sureTop()" >确认</button>
+				</div>
+		</div>
+	</body>
+		
+		<script src="/lib/layui/layui.js" charset="utf-8"></script>
+		<script>
+		layui.config({base: '/lib/layui/js/'});
+		layui.config({baseUrl: ''}).use('upload');
+		layui.use(['treetable','form','layer','jquery','upload'], function(){
+				var $ = layui.jquery,layer = layui.layer,form = layui.form,treetable=layui.treetable,upload=layui.upload;
+				var projStatus=null;
+            	var mypages=null;
+				var selectPrivence=null;
+				var menudata =[];
+				var uploadFileUrlConfig="http://10.2.100.17:8060/api/file"
+				var projectId="";
+				var personImg=null;
+				var menuImg=null;
+				var isEditStatus=null;
+				var openTag=null;
+		
+		
+				function initTable(){
+				 $.get("/businesse/market/menu/meunList",function(res){
+					 if(res.errcode==0){
+					 	menudata=res.result;
+					 	loadTable(res.result);
+					 	}else{
+					 	layer.msg("服务繁忙请稍等。。")
+					 }
+				 });
+				};
+				
+				function loadTable(data){
+					treetable.render({
+						elem: '#itemsBody',
+						data: data,
+						field: 'name',
+						is_checkbox: false,
+						cols: [
+							{field: 'name',title: '功能名称'},
+							{field: 'level',title: '等级'},
+							{title: '功能图片',template:function(item){return iconAction(item,1);}},
+							{title: '个人中心图片',template:function(item){return iconAction(item,2);}},
+							{title: '销售状态',template:function(item){return item.sellStatus==1?"销售中":"不可销售"}},
+							{field: 'sort',title: '功能顺序'},
+							{field: 'actions',title: '操作',template:function(item){return options(item);}}
+						 ]
+					});
+				}
+				
+				
+				window.addMenuBut=function(status,item){
+					var title="新增菜单";
+					if(status==1){//编辑一级菜单
+						title="编辑菜单"
+						isEditStatus=true;
+						$("#menuImgs").show();
+						$("#keyId").val(item.id);
+						$("#level").val("1");
+						$("#addMenuName").val(item.name);
+						$("#addMenuSort").val(item.sort);
+						$("#functionId").val(item.functionId);
+						if(item.menuImg){
+							$("#menuImg").attr("src",uploadFileUrlConfig+"/down?fid="+item.menuImg+"_32")
+							$("#menuImg").show();
+							$("#uploadmenuImg").hide();
+						}else{
+							$("#menuImg").hide();
+							$("#uploadmenuImg").show();
+						}
+						if(item.personImg){
+							$("#uploadpersonImg").hide();
+							$("#personImg").show();
+							$("#personImg").attr("src",uploadFileUrlConfig+"/down?fid="+item.personImg+"_32")
+						}else{
+							$("#uploadpersonImg").show();
+							$("#personImg").hide();
+						}
+						projectId=item.id;
+					}else if(status==2){//编辑二级菜单
+						isEditStatus=true;
+						$("#addMenuName").val(item.name);
+						$("#parentId").val(item.pid);
+						$("#keyId").val(item.id);
+					    $("#menuImgs").hide();
+					    $("#level").val("2");
+					    $("#addMenuSort").val(item.sort);
+					    $("#functionId").val(item.functionId);
+					    if(item.personImg){
+							$("#uploadpersonImg").hide();
+							$("#personImg").show();
+							$("#personImg").attr("src",uploadFileUrlConfig+"/down?fid="+item.personImg+"_32")
+						}else{
+							$("#uploadpersonImg").show();
+							$("#personImg").hide();
+						}
+						projectId=item.id;
+					}else if(status==3){//新增二级菜单
+						isEditStatus=false;
+						 $("#addMenuName").val("");
+						 $("#parentId").val(item.id);
+						 $("#menuImgs").hide();
+						 $("#level").val("2");
+						 $("#addMenuSort").val("1");
+						 initKeyId();
+					}else{//新增一级菜单
+						isEditStatus=false;
+						$("#menuImg").hide();
+						$("#uploadmenuImg").show();
+						$("#uploadpersonImg").show();
+						$("#personImg").hide();
+						$("#menuImgs").show();
+						$("#parentId").val("0");
+						$("#level").val("1");
+						$("#addMenuName").val("");
+						 $("#addMenuSort").val("1");
+						initKeyId();//初始主键id
+					}
+				  openTag=layer.open({
+                        type: 1,
+                        title: title,
+                        maxmin: true,
+                        area: ['420px', '380px'],
+                        content:$('#addFunctionContent'),
+                        success:function(){
+                        	$(".layui-layer-shade").css("z-index","0");
+                        	$(".layui-layer-page").show();
+                        },
+                        end : function() {
+                			$(".layui-layer-shade").css("display","none");
+                		}
+				  });
+				}
+				
+				function initKeyId(){
+					$.get("/businesse/market/menu/keyId",function(res){
+						projectId=res;
+						$("#keyId").val(res);
+					})
+				};
+				window.sureTop=function(){
+					$("#sureFormInfo").click();
+				};
+				
+				window.cancleTop=function(){
+					console.log(openTag);
+					layer.close(openTag);//关闭窗口
+					$(".layui-layer-shade").remove();
+					$(".layui-layer-page").hide();
+				 	return false;
+				};
+				//确定添加
+				form.on('submit(sureAdd)',function(data){
+				 	var menuName=data.field.name;
+				 	var infoData=data.field;
+				 	hasMenu(menuName,infoData);
+				 	return false;
+				 });
+				
+				//是否有该菜单
+				function hasMenu(status,data){
+					var status=1;
+					if(isEditStatus){status=2;}
+				     var params={"id":data.id,"name":data.name,"parentId":data.parentId,"status":status}
+					$.post("/businesse/market/menu/hasMenu",params,function(res){
+						 if(res.result){//提交信息
+							data["menuFile"]=menuImg;
+							data["personFile"]=personImg;
+							delete data.file;
+							if(isEditStatus){
+								editMenuInfo(data);
+							}else{
+								addMenuInfo(data);
+							}
+						}else{
+							layer.msg("该菜单已存在，请重新输入。。。")
+						}
+					})
+				}
+				
+				function imgInit(){
+				 var uploadInst = upload.render({
+                    elem: '#uploadmenuImg',
+                    url: uploadFileUrlConfig+"/upload/",
+                    data: {'projId':projectId},
+                    before: function(obj){
+	                    var data={'projId':projectId};
+	                    this.data=data;
+                        obj.preview(function(index, file, result){
+                            $('#uploadmenuImg').hide();
+                            $('#menuImg').attr('src', result);
+                            $('#menuImg').show();
+                        });
+                    },
+                    done: function(res){
+                        if(res.errcode != 200){
+                            return layer.msg('上传失败');
+                        }else{
+                        	menuImg=res.result[0];
+                        	menuImg['type']="ico-index";
+                        	menuImg['relId']=projectId;
+                        }//成功
+                    },error: function(){
+
+                    }
+                });
+				 var uploadInst = upload.render({
+                    elem: '#menuImg',
+                    url: uploadFileUrlConfig+"/upload/",
+                    data: {'projId':projectId},
+                    before: function(obj){
+                    var data={'projId':projectId};
+	                    this.data=data;
+                        obj.preview(function(index, file, result){
+                            $('#menuImg').attr('src', result);
+                        });
+                    },
+                    done: function(res){
+                        if(res.errcode != 200){
+                            return layer.msg('上传失败');
+                        }else{
+                        	menuImg=res.result[0];
+                        	menuImg['type']="ico-index";
+                        	menuImg['relId']=projectId;
+                        }//成功
+                    },error: function(){
+
+                    }
+                });
+				 var uploadInst = upload.render({
+                    elem: '#uploadpersonImg',
+                    url: uploadFileUrlConfig+"/upload/",
+                    data: {'projId':projectId},
+                    before: function(obj){
+                    var data={'projId':projectId};
+	                    this.data=data;
+                        obj.preview(function(index, file, result){
+                            $('#uploadpersonImg').hide();
+                            $('#personImg').attr('src', result);
+                            $('#personImg').show();
+                        });
+                    },
+                    done: function(res){
+                        if(res.errcode != 200){
+                            return layer.msg('上传失败');
+                        }else{
+                            personImg=res.result[0];
+                        	personImg['type']="ico-person";
+                        	personImg['relId']=projectId;
+                        }//成功
+                    },error: function(){
+
+                    }
+                });
+				 var uploadInst = upload.render({
+                    elem: '#personImg',
+                    url: uploadFileUrlConfig+"/upload/",
+                    data: {'projId':projectId},
+                    before: function(obj){
+                    var data={'projId':projectId};
+	                    this.data=data;
+                        obj.preview(function(index, file, result){
+                            $('#personImg').attr('src', result);
+                        });
+                    },
+                    done: function(res){
+                        if(res.errcode != 200){
+                            return layer.msg('上传失败');
+                        }else{
+                            personImg=res.result[0];
+                        	personImg['type']="ico-person";
+                        	personImg['relId']=projectId;
+                        }//成功
+                    },error: function(){
+
+                    }
+                });
+				
+				
+				
+				}
+				
+				function addMenuInfo(data){
+					$.ajax({
+						url:"/businesse/market/menu/addMenu",
+						dataType:"json",
+						contentType: "application/json; charset=utf-8",
+	                    type:"post",
+						data:JSON.stringify(data),
+						success:function(res) {
+	                        if (parseInt(res.errcode) != 0) {
+	                            layer.msg("服务繁忙，请稍后再试。。。。");
+	                        } else {
+	                        	
+	                        	layer.close(openTag);
+	                           //刷新当前页面 
+	                            initTable();
+	                        }
+	                    }
+					 });
+				}
+				
+				function editMenuInfo(data){
+					$.ajax({
+						url:"/businesse/market/menu/updateMenu",
+						dataType:"json",
+						contentType: "application/json; charset=utf-8",
+	                    type:"post",
+						data:JSON.stringify(data),
+						success:function(res) {
+	                        if (parseInt(res.errcode) != 0) {
+	                            layer.msg("服务繁忙，请稍后再试。。。。");
+	                        } else {
+	                        	
+	                        	layer.close(openTag);
+	                           //刷新当前页面 
+	                           initTable();
+	                        }
+	                    }
+					 });
+				}
+
+				treetable.on('treetable(add)',function(data){
+					addMenuBut(3,data.item);
+				})
+				
+				treetable.on('treetable(edit)',function(data){
+					if(data.item.level==1){
+						addMenuBut(1,data.item);
+					}else{
+						addMenuBut(2,data.item);
+					}
+				})
+				treetable.on('treetable(delete)',function(data){
+				    var mytitles="您确定要删除该菜单和该属的子菜单";
+					if(data.item.level>1){
+						mytitles="您确定要删除["+data.item.name+"]菜单!";
+					}else{
+						mytitles="您确定要删除["+data.item.name+"]菜单和该属的子菜单!";
+					}
+					$(".layui-layer-shade").css("z-index","0");
+					var  myconfirm=layer.confirm(mytitles, {
+					  btn: ['确定','取消']
+					}, function(){
+						 var params={"id":data.item.id,"functionId":data.item.functionId};
+					  	$.post("/businesse/market/menu/deleteMenu",params,function(res){
+					  		initTable();
+					  		 layer.close(myconfirm);
+						});
+					}, function(){
+					  layer.close(myconfirm);
+					});
+				});
+
+				function iconAction(item,status){
+					if(status==1){
+					 	var fid=item.menuImg;
+						if(fid){
+							 return "<img src='"+uploadFileUrlConfig+"/down?fid="+fid+"_32' onerror='nofind(this);' width='32px' height='32px'>";
+						}else{
+							return'';
+						}
+					}else{
+						var fid=item.personImg;
+						if(fid){
+							 return "<img src='"+uploadFileUrlConfig+"/down?fid="+fid+"_32' onerror='nofind(this);' width='32px' height='32px'>";
+						}else{
+							return'';
+						}
+					}
+				}
+				function priceAction(item){
+					if(item.price){
+						return item.price+"/"+item.priceStandard
+					}else{
+						return "";
+					}
+				}
+				function statusAction(item){
+					var status=item.sellStatus;
+					if(status==1){
+						return '<input type="checkbox" lay-skin="switch" lay-filter="status" checked lay-text="开启|关闭">';
+					}else{
+						return '<input type="checkbox" lay-skin="switch" lay-filter="status" lay-text="开启|关闭">';
+					}
+				};
+
+				function options(item){
+					var but1='<shiro:hasPermission name="sys:businesseMenuAdd"><a class="layui-btn layui-btn-xs" lay-filter="add">添加子菜单</a></shiro:hasPermission>';
+					var but2='<shiro:hasPermission name="sys:businesseMenuEdit"><a class="layui-btn layui-btn-xs layui-btn-normal" lay-filter="edit">编辑菜单</a></shiro:hasPermission>';
+					var but3='<shiro:hasPermission name="sys:businesseMenuDelete"><a class="layui-btn layui-btn-xs layui-btn-danger" lay-filter="delete">删除菜单</a></shiro:hasPermission>';
+					var buts='';
+					if(item.level==1){
+						buts+=but1;
+					}
+					if(item.sellStatus==1){
+						buts+=but2;
+					}else{
+						buts=buts+but2+but3;
+					}
+					return buts;
+					
+				};
+				
+				 //错误图片
+				window.nofind=function(img){ 
+				    img.src="/images/proj-test.png"; 
+				    img.onerror=null;
+				} 
+				
+				
+				imgInit();
+				initTable();
+				
+				
+			});
+		</script>
+	
+
+</html>

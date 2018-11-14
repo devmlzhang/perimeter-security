@@ -19,7 +19,7 @@ public class UiServiceApplication {
 
 		@RequestMapping("/index")
 		public String index() {
-			return "test";
+			return "index";
 		}
 	}
 }

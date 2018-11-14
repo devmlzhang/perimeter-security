@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>权限分类-WeAdmin Frame型后台管理系统-WeAdmin 1.0</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="/css/font.css">
+    <link rel="stylesheet" href="/css/weadmin.css">
+  </head>
+  <body>
+    <div id="addFunctionContent" class="tip-content">
+			<form class="layui-form">
+				<div class="layui-form-item">
+					<label  class="layui-form-label" style="width:100px">项目公司：</label>
+					<label  class="layui-form-label" style="width:320px;text-align:left" th:text="${projCompany}"></label>
+				</div>
+				<div class="layui-form-item">
+					<label  class="layui-form-label" style="width:100px">项目名称：</label>
+					<label  class="layui-form-label" style="width:320px;text-align:left" th:text="${projName}"></label>
+				</div>
+				<div class="layui-form-item">
+					<label  class="layui-form-label" style="width:100px">详细地址：</label>
+					<label  class="layui-form-label" style="width:100px;text-align:left" th:text="${projAddress}"></label>
+				</div>
+				<div class="layui-form-item">
+					<label  class="layui-form-label" style="width:100px">项目经理：</label>
+					<label  class="layui-form-label" style="width:100px;text-align:left" th:text="${projDirector}"></label>
+					<label  class="layui-form-label" style="width:100px">联系电话：</label>
+					<label  class="layui-form-label" style="width:100px;text-align:left" th:text="${phone}"></label>
+				</div>
+				<hr>
+				<div class="layui-form-item">
+					<label  class="layui-form-label" style="width:100px">开工时间：</label>
+					<label  class="layui-form-label" style="width:100px;text-align:left" th:text="${#strings.substring(startDate,0,10)}"></label>
+					<label  class="layui-form-label" style="width:100px">完工日期：</label>
+					<label  class="layui-form-label" style="width:100px;text-align:left" th:text="${#strings.substring(endDate,0,10)}"></label>
+				</div>
+				<hr>
+				<div class="layui-form-item">
+					<label  class="layui-form-label" style="width:100px">用户账号：</label>
+					<label  class="layui-form-label" style="width:100px;text-align:left" th:text="${userAccount}"></label>
+					<label  class="layui-form-label" style="width:100px">账号类型：</label>
+					<label  class="layui-form-label" style="width:100px;text-align:left" th:switch=="${userAccountType}">
+						<p th:case="2">试用账号</p>
+  						<p th:case="1">正常账号</p>
+					</label>
+					<label  class="layui-form-label" style="width:100px">试用截止日期：</label>
+					<label  class="layui-form-label" style="width:100px;text-align:left" th:text="${#strings.substring(probationEndTime,0,10)}"></label>
+				</div>
+				<div class="layui-form-item">
+					<label  class="layui-form-label" style="width:100px">首次签约人：</label>
+					<label  class="layui-form-label" style="width:100px;text-align:left" th:text="${firsrContractor}"></label>
+					<label  class="layui-form-label" style="width:100px">项目来源：</label>
+					<label  class="layui-form-label" style="width:100px;text-align:left" th:switch=="${projSource}">
+						<span th:case="1">招投标</span>
+  						<span th:case="2">线下营销</span>
+  						<span th:case="3">自主开通</span>
+					</label>
+				</div>
+				<div class="layui-form-item">
+					<label  class="layui-form-label" style="width:100px">项目备注：</label>
+					<label  class="layui-form-label" style="width:100px;text-align:left" th:text="${projRemark}"></label>					
+				</div>
+				<hr>
+				<div class="layui-form-item">
+					<label  class="layui-form-label" style="width:100px">操作人：</label>
+					<label  class="layui-form-label" style="width:100px;text-align:left" th:text="${createUserName}"></label>
+					<label  class="layui-form-label" style="width:100px">录入时间：</label>
+					<label  class="layui-form-label" style="width:160px;text-align:left" th:text="${createTime} != null ? ${ #dates.format(createTime, 'yyyy-MM-dd HH:mm:ss')}:''"></label>
+				</div>
+			</form>
+		</div>
+	</body>
+</html>
+
+

@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<html xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <meta charset="utf-8">
+    <title>资源</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="stylesheet" href="/css/font.css">
+    <link rel="stylesheet" href="/css/weadmin.css">
+    <style>
+        .pull-right{float:right;margin-right:20px;margin-top: 6px;}
+        .contentDetail{
+           margin-left: 25px;
+        }
+        .upload-market-index-span{
+            margin:20px;
+        }
+        .span-bottom{
+            margin-bottom: 0px;
+            text-align: center;
+        }
+        .layui-icon {
+            font-size: 50px;
+            color: #009688;
+        }
+        .detailImg-button{
+            position: relative;
+            bottom: 40%;
+            left: 30px;
+            display: inline-block;
+            width: 150%;
+            height: 110px;
+            transition: box-shadow .25s;
+            border-radius: 4px;
+            border: #cccccc 1px solid;
+            text-align: center;
+            cursor: pointer;
+        }
+        .upload-detail {
+            position: relative;
+            left: 10px;
+            display: inline-block;
+            width: 30%;
+            height: 100px;
+            margin: 0px 20px 20px 0;
+            transition: box-shadow .25s;
+            border-radius: 4px;
+            border: #cccccc 1px solid;
+            text-align: center;
+            cursor: pointer;
+        }
+        .bannerImg-upload-img {
+            width: 32%;
+            height: 40%;
+            top: 30px;
+            margin: 20px;
+        }
+        .upload-button {
+            /*position: absolute;*/
+            /*top: 30px;*/
+            /*right: 100px;*/
+            display: inline-block;
+            width: 32%;
+            height: 110px;
+            /*float: right;*/
+            transition: box-shadow .25s;
+            border-radius: 4px;
+            border: #cccccc 1px solid;
+            text-align: center;
+            cursor: pointer;
+            margin-left: 20px;
+
+        }
+
+        .detail-upload-img {
+            width: 150px;
+            height: 120px;
+
+        }
+        .detailImg-img{
+            margin: auto auto auto 20px;
+        }
+
+        .content-left{
+            float: left;
+            width: 60%;
+        }
+    </style>
+
+</head>
+<body class="childrenBody">
+<div  style="position:absolute; height:100%;width: 100%; overflow:auto">
+    <button class="layui-btn layui-btn-sm layui-btn-primary pull-right back-but" onclick="goContentBack()">返回</button>
+    <form   class="layui-form contentDetail" lay-filter="functions" action="" >
+        <div class="content-left">
+            <label th:text="${manageDeatil.name}" style="margin-outside: 10px;font-weight: bold"></label>
+            <div class="layui-row">
+                <div class="layui-col-md12">
+                    <div class="grid-demo grid-demo-bg1">请输入模块简介</div>
+                    <div class="layui-form-item">
+                        <input type="hidden" id="id" name="id" th:value="${manageDeatil.id}"  autocomplete="off" class="layui-input">
+                        <div class="layui-input-inline " style="width: 100%;margin-top: 10px">
+                            <input  type="tel" id="introduction"  name="introduction" th:value="${manageDeatil.introduction}"  autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="layui-row">
+                <div class="layui-col-md12">
+                    <div class="grid-demo grid-demo-bg1">请输入模块价格（/年）</div>
+                    <div class="layui-form-item">
+                        <div class="layui-input-inline " style="width: 100%;margin-top: 10px">
+                            <input  type="tel" id="price"  name="price" th:value="${manageDeatil.price}"  autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="layui-row">
+                <div class="layui-col-md12">
+                    <div class="grid-demo grid-demo-bg1">请输入模块描述(最多500字)</div>
+                    <div class="layui-form-item">
+                            <textarea id="description"   name="description" style="display: none;"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-row">
+                <div class="layui-col-md12">
+                    <div class="layui-input-inline">
+                    <div class="detailImg-img" >
+                        <img src="" alt=""   class="detail-upload-img" id="detailFile">
+                        <input  type="hidden" id="detailFileId"  name="name" th:value="${detailFileId}"  autocomplete="off" class="layui-input">
+                    </div>
+                    </div>
+                   <!-- <button type="button" class="layui-btn layui-btn-xs" id="detailImg">上传图片</button>-->
+                    <div class="layui-input-inline">
+                    <div class="detailImg-button" id="detailImg">
+                        <div class="upload-button-span">
+                            <i class="layui-icon"></i>
+                            <p>上传模块</p>
+                            <p>详细图</p>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label" style="width: 100px">是否对外销售</label>
+                <div class="layui-input-inline">
+                    <select name="sellStatus" id="sellStatus">
+                        <option value="1">是</option>
+                        <option value="0">否</option>
+                    </select>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-input-block" style="margin-top: 20px;position: center">
+                    <shiro:hasPermission name="sys:businesseContentEdit">
+                    <button class="layui-btn" lay-submit="" lay-filter="contentSubmit">完成编辑</button>
+                    </shiro:hasPermission>
+                    <button class="layui-btn cancel_btn"  >取消编辑</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-right">
+            <div class="bannerImg-img" >
+                <!-- <img src="http://10.2.100.17:8060/zuul/api/file/down?fid=7748337491991789569" alt=""  class="bannerImg-upload-img">-->
+                <img  alt="" id="bannerFile"  class="bannerImg-upload-img">
+                <div class="upload-button" id="bannerImg">
+                    <div class="upload-button-span">
+                        <i class="layui-icon"></i>
+                        <p>上传模块</p>
+                        <p>BANNER</p>
+                    </div>
+                    <p class="span-bottom">尺寸：385X216</p>
+                </div>
+                <input  type="hidden" id="bannerFileId"  th:value="${bannerFileId}"  autocomplete="off" class="layui-input">
+            </div>
+        </div>
+
+    </form>
+</div>
+<script src="/lib/layui/layui.js" charset="utf-8"></script>
+<script th:inline="javascript">
+    var description = [[${manageDeatil.description}]];
+    var functionId = [[${manageDeatil.functionId}]];
+    var sellStatus = [[${manageDeatil.sellStatus}]];
+    var bannerFileId = [[${bannerFileId}]];
+    var detailFileId = [[${detailFileId}]];
+    var  uploadFileUrlConfig=[[${url}]];
+    var  downFileUrlConfig=uploadFileUrlConfig+"/down?fid=";
+</script>
+
+<script type="text/javascript">
+    layui.use(['flow','form', 'table', 'layer','layedit','upload'],  function(){
+        var flow = layui.flow,
+        form = layui.form,
+        layedit = layui.layedit,
+        upload = layui.upload,
+        layer = parent.layer === undefined ? layui.layer : top.layer,
+        $ = layui.jquery, table = layui.table;
+
+        //富文本编辑
+        var index = layedit.build('description');
+        $("#description").val(description);
+
+        //编辑回显售卖状态
+        if($("#sellStatus").val()!==""){
+            $("#sellStatus").val(sellStatus);//默认选中
+        }
+        form.render('select');//重新渲染
+
+
+
+        console.log("sellStatus:"+sellStatus);
+        //自定义工具栏
+        layedit.build('description', {
+            tool: ['face', 'link', 'unlink', '|', 'left', 'center', 'right']
+            ,height: 200
+        });
+        console.log("uploadFileUrlConfig:"+uploadFileUrlConfig);
+
+        //banner图片展示
+        $("#bannerFile").show();
+        if(bannerFileId){
+            console.log("bannerFileId:"+JSON.stringify(bannerFileId));
+            $("#bannerFile").attr("src",downFileUrlConfig+bannerFileId);
+        }
+        //详细图片展示
+        $("#detailFile").show();
+        if(detailFileId){
+            console.log("detailFileId:"+JSON.stringify(detailFileId));
+            $("#detailFile").attr("src",downFileUrlConfig+detailFileId);
+        }
+
+        var fileInfos=[];
+        upload.render({
+            elem: '#bannerImg'
+            ,url: uploadFileUrlConfig+"/upload/"
+            ,data: {'projId':"123456789123"}
+            ,before: function(obj){
+                //预读本地文件示例，不支持ie8
+                obj.preview(function(index, file, result){
+                    $('#bannerFile').attr('src', result); //图片链接（base64）
+                });
+            }
+            ,done: function(res){
+                console.log(res)
+                if(parseInt(res.errcode)==200){
+                    res.result[0].type="pic-index";
+                    fileInfos.push(res.result[0]);
+                    return layer.msg(res.errmsg);
+                }else {
+                    return layer.msg("上传失败"+res.errmsg);
+                }
+            }
+        });
+        //详细图片上传
+        upload.render({
+            elem: '#detailImg'
+            ,url: uploadFileUrlConfig+"/upload/"
+            ,data: {'projId':"123456789123"}
+            ,before: function(obj){
+                //预读本地文件示例，不支持ie8
+                obj.preview(function(index, file, result){
+                    $('#detailFile').attr('src', result); //图片链接（base64）
+                });
+            }
+            ,done: function(res){
+                console.log(res)
+                if(parseInt(res.errcode)==200){
+                    res.result[0].type="pic-detail";
+                    fileInfos.push(res.result[0]);
+                    return layer.msg(res.errmsg);
+                }else {
+                    return layer.msg("上传失败"+res.errmsg);
+                }
+            }
+        });
+
+        form.on('submit(contentSubmit)', function(data){
+            var contentManage={};
+            contentManage.id=data.field.id;
+            contentManage.introduction=data.field.introduction;
+            contentManage.price=data.field.price;
+            contentManage.sellStatus=data.field.sellStatus;
+            contentManage.functionId=functionId;
+            var content = layedit.getContent(index);
+            contentManage.description= content;
+            var params={
+                "contentManage" : contentManage,
+                "fileInfos" : fileInfos,
+            };
+            var addParams=JSON.stringify(params);
+            console.log("addParams:"+addParams);
+            $.ajax({
+                url:"/businesse/content/contentEdit",
+                dataType:"json",
+                contentType: "application/json; charset=utf-8",
+                type:"post",
+                data:addParams,
+                success:function(res) {
+                    if (res.code=='0'){
+                        //刷新父页面
+                        window.location.href="/businesse/content/index";
+                    }else if(res.code=='403'){
+                        layer.msg("无权限！");
+                    }else {
+                        layer.msg("新增失败");
+                    }
+                }
+            });
+            return false;
+        });
+
+
+        //返回
+        window.goContentBack=function(){
+            window.location.href="/businesse/content/index";
+        }
+
+        $(".cancel_btn").click(function(){
+            window.location.href="/businesse/content/index";
+            return false;
+        });
+
+
+    });
+
+</script>
+</body>
+</html>

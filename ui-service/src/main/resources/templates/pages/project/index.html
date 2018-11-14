@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>角色管理-WeAdmin Frame型后台管理系统-WeAdmin 1.0</title>
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+		<link rel="stylesheet" href="/css/font.css">
+		<link rel="stylesheet" href="/css/weadmin.css">
+		<style>
+			.pull-left {float:left;margin-left:20px;}
+			.pull-right{float:right;margin-right:20px;margin-top: 6px;}
+			.clear{clear:both}
+			.table-items{width:100%;margin-top:10px; border: 1px solid transparent;}
+			.table-items .table-left{float:left;margin-left:20px;margin-right:10px;}
+			.table-items .table-content{width: 510px;float:left;margin-left:20px;margin-right:10px;font-size:16px;line-height:32px;}
+			.table-items .table-content span{margin-right:20px}
+			.table-items .table-status {float:right;position:relative;margin:20px 20px;border-radius: 8px;padding:26px 20px;background: #c2d6ff;text-align: center;line-height: 18px}
+			.table-items .table-status img{margin-top:20px}
+			.table-items .table-status span{position:absolute;left: 40px;top: 60px;}
+			.table-items .items-2{position: relative}
+			.table-items .margin-pull{position:absolute;left: 220px; top: 0px;}
+			.table-items .margin-pull-2{position:absolute;left: 320px; top: 0px;}
+			.table-items .proj-version{font-size: 22px;padding:34px 30px;}
+			.button-team{margin: 10px auto; width: 120px}
+			.tip-content{padding-top: 10px; padding-right: 20px;display: none}
+			.proj-list-title{width:100%};
+			.back-but{margin-top:10px}
+		</style>
+	</head>
+
+	<body>
+		<div class="weadmin-nav">
+		<button class="layui-btn layui-btn-sm layui-btn-primary pull-right back-but" onclick="goback()">返回</button>
+		</div>
+		<div class="proj-list">
+			<div class="proj-detail">
+				<div class="table-items">
+					<div class="table-left">
+						<span th:if="${#strings.length(projImg) eq 0}">
+							<img  src="/images/proj-test.png"  width="200" style="max-height:210px">
+						</span>
+						<span th:if="${#strings.length(projImg) gt 0}">
+							<img  th:src="@{${fileUrl}+'down?fid='+${projImg}}"  width="200" style="max-height:210px">
+						</span>
+					</div>
+					<div class="table-content">
+						<strong style="font-size:18px">项目名称：<a href="javascript:goProjectDetail()"><span th:text="${projName}"></a></a></span></strong>
+						<p><span>项目公司：</span><span th:text="${projCompany}"></span></p>
+						<p><span>项目地址：</span><span th:text="${projAddress}"></span></p>
+						<div class="items-2"><p><span>项目经理：</span><span th:text="${projDirector}"></span></p><p class="margin-pull"><span>联系电话：</span><span th:text="${phone}">${phone!''}</span></p></div>
+						<div class="items-2">
+							<p><span>开工日期：</span><span th:text="${#dates.format(startDate,'yyyy-MM-dd')}"></span></p>
+							<p class="margin-pull"><span>到期时间：</span><span th:text="${#dates.format(endDate,'yyyy-MM-dd')}"></span></p>
+							
+						</div>
+						<div class="items-2" th:if="${userAccountType == 2}"><p><span>账号截止日期：</span><span th:text="${#dates.format(probationEndTime,'yyyy-MM-dd')}"></span></p></div>
+						<div class="items-2"><p><span>用户账号：</span><span th:text="${userAccount}"></span></p></div>
+					</div>
+					<div class="table-status proj-version" th:switch="${version}">
+						<p th:case="1">基础版</p>
+  						<p th:case="2">标准版</p>
+  						<p th:case="3">应用市场</p>
+  						<p th:case="4">硬件</p>
+					</div>
+					<div class="clear"></div>
+				</div>
+			</div>
+			<hr>
+			<label  class="layui-form-label " style="width: 200px;text-align: left">首次签约人：<span th:text="${firsrContractor}"></span></label>
+			<label  class="layui-form-label " style="width: 220px;text-align: left">售买服务总费用：<span th:text="${totalContractCost}">0</span>元</label>
+			<label  class="layui-form-label " style="width: 220px;text-align: left">签订合同总费用：<span th:text="${totalReallyCost}">0</span>元</label>
+			<label  class="layui-form-label " style="width: 180px;text-align: left">项目来源：<span th:switch="${projSource}">
+						<span th:case="1">招投标</span>
+  						<span th:case="2">线下营销</span>
+  						<span th:case="3">自主开通</span>
+  						</span></label>
+  			<div th:if="${userAccountType == 1}">
+	  			<shiro:hasPermission name="sys:projectServiceAdd">
+					<button class="layui-btn layui-btn-sm pull-right" onclick="addFunction()"><i class="layui-icon"></i>新增功能</button>
+	  			</shiro:hasPermission>
+	  			<shiro:hasPermission name="sys:projectPwdReset">
+					<button class="layui-btn layui-btn-sm pull-right layui-btn-normal" onclick="resetPassword()">回复初始密码</button>
+	  			</shiro:hasPermission>
+<!-- 				<button class="layui-btn layui-btn-sm layui-btn-normal pull-right" onclick="addHard()"><i class="layui-icon"></i>新增硬件</button>
+ -->  			</div>			
+			<hr>
+			<label class="layui-form-label " style="width: 100px"><strong>版本清单</strong> </label>
+			<label class="layui-form-label " style="width: 180px">总售价：<span th:text="${versions.servicePriceTotal}">0.00</span>元</label>
+			<label class="layui-form-label " style="width: 180px">总购价：<span th:text="${versions.payPriceTotal}">0.00</span>元</label>
+			<div class="proj-list-title clear"></div>
+			<table class="layui-hide" id="version" lay-filter="version"></table>
+			<label class="layui-form-label " style="width: 100px"><strong>软件清单</strong> </label>
+			<label class="layui-form-label " style="width: 180px">总售价：<span th:text="${softs.servicePriceTotal}">0.00</span>元</label>
+			<label class="layui-form-label " style="width: 180px">总购价：<span th:text="${softs.payPriceTotal}">0.00</span>元</label>
+			<div class="proj-list-title clear"></div>
+			<table class="layui-hide" id="software" lay-filter="software"></table>
+			<!-- <label class="layui-form-label " style="width: 100px"><strong>硬件清单</strong> </label>
+			<label class="layui-form-label " style="width: 180px">总售价：<span th:text="${hards.servicePriceTotal}">0.00</span>元</label>
+			<label class="layui-form-label " style="width: 180px">总购价：<span th:text="${hards.payPriceTotal}">0.00</span>元</label>
+			<div class="proj-list-title clear"></div>
+			<table class="layui-hide" id="hardware" lay-filter="hardware"></table> -->
+		</div>
+		
+		<!-- 新增功能内容 -->
+		<div id="addFunctionContent" class="tip-content">
+			<form class="layui-form">
+				<input type="hidden" name="projId" th:value="${projId}" value="" >
+				<input type="hidden" name="orderType" value="1" id="softOrderType">
+				<input type="hidden" name="serviceType" value="3" id="softServiceType">
+				<input type="hidden" name="serviceStatus" value="1">
+				<input type="hidden" name="createUserId" value="" th:value="${userId}">
+				<input type="hidden" name="serviceCode" value="" id="softServiceCode">
+				<input type="hidden" name="serviceId" value="" id="softServiceId">
+				<input type="hidden" name="serviceStandard" value="" id="serviceStandard">
+				<div class="layui-form-item">
+					<label  class="layui-form-label"><span class="we-red icon-center">*</span>模块名称：</label>
+					<div class="layui-input-block">
+						<select id="softWarelist" name="serviceName" lay-filter="selectSoftWareService"></select>
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label  class="layui-form-label"><span class="we-red icon-center">*</span>功能名称：</label>
+					<div class="layui-input-block">
+						<select id="softWareStandandlist" name="serviceStandard" lay-filter="selectSoftWareStandardService"></select>
+					</div>
+				</div>
+				<input type="hidden" id="addHardPayNum"  name="payNum" required="" lay-verify="required"  class="layui-input"  value="1">
+				<div class="layui-form-item">
+					<label  class="layui-form-label"><span class="we-red icon-center">*</span>购买期限：</label>
+					<div class="layui-input-block">
+						<select name="times" lay-filter="selectSoftWareTimes">
+							<option value="3" >三个月</option>
+							<option value="6" >半年</option>
+							<option value="12" >一年</option>
+						</select>
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label  class="layui-form-label"><span class="we-red icon-center">*</span>服务价格：</label>
+					<div class="layui-input-block">
+						<input type="text" id="softWarePrice"  name="servicePrice" required="" lay-verify="required"  class="layui-input" readonly value="">
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label  class="layui-form-label"><span class="we-red icon-center">*</span>合同金额：</label>
+					<div class="layui-input-block">
+						<input type="text" id="reallyPay" name="payPrice" required="" lay-verify="required|money"  class="layui-input" value="0.00">
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label  class="layui-form-label"><span class="we-red icon-center">*</span>折扣：</label>
+					<div class="layui-input-inline" style="width: 110px">
+						<input type="text" id="serviceRato" name="payRote" required="" lay-verify="required"  class="layui-input" readonly value="0.00">
+					</div>
+					<div class="layui-form-mid layui-word-aux">%</div>
+				</div>
+				<div class="layui-form-item">
+					<label  class="layui-form-label"><span class="we-red icon-center">*</span>销售批次：</label>
+					<div class="layui-input-block">
+						<select name="saleBatch" disabled="true">
+							<option value="2" >二次营销</option>
+							<option value="1" >首次营销</option>
+						</select>
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label  class="layui-form-label" ><span class="we-red icon-center">*</span>销售渠道：</label>
+					<div class="layui-input-block" >
+						<select name="saleChannel">
+							<option value="2" >线下营销</option>
+							<option value="1" >招投标</option>
+							<option value="3" >自主开通</option>
+						</select>
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label  class="layui-form-label" ><span class="we-red icon-center">*</span>付款方式：</label>
+					<div class="layui-input-block" >
+						<select name="payType">
+							<option value="1" >转账</option>
+							<option value="2" >支付宝</option>
+							<option value="3" >微信</option>
+							<option value="4" >银联</option>
+						</select>
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label  class="layui-form-label"><span class="we-red icon-center">*</span>签约人：</label>
+					<div class="layui-input-block">
+						<input type="text"  name="signatory" required="" lay-verify="required"  class="layui-input">
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label  class="layui-form-label"><span class="we-red icon-center">*</span>信息录入人：</label>
+					<div class="layui-input-block">
+						<input type="text"  th:value="${userName}" name="createUserName" required="" lay-verify="required"  class="layui-input" readonly>
+					</div>
+				</div>
+				<button id="addSoftWare" hidden lay-submit="" lay-filter="subOrder" ></button>
+			</form>
+			<div class="button-team">
+				<button class="layui-btn layui-btn-sm layui-btn-primary" onclick="cancleAddFunction()">取消</button>
+				<button class="layui-btn layui-btn-sm layui-btn-normal"  onclick="sureAddFunction()">确认</button>
+			</div>
+		</div>
+		
+		<!-- 硬件弹框 -->
+		<div id="addHardContent" class="tip-content">
+			<form class="layui-form">
+				<input type="hidden" name="projId" th:value="${projId}" value="" >
+				<input type="hidden" name="orderType" value="2">
+				<input type="hidden" name="serviceType" value="4">
+				<input type="hidden" name="serviceStatus" value="1">
+				<input type="hidden" name="createUserId" value="" th:value="${userId}">
+				<input type="hidden" name="serviceCode" value="" id="hardServiceCode">
+				<input type="hidden" name="serviceId" value="" id="hardServiceId">
+				<div class="layui-form-item">
+					<label  class="layui-form-label"><span class="we-red icon-center">*</span>模块名称：</label>
+					<div class="layui-input-block">
+						<select id="hardWarelist" name="serviceName" lay-filter="selectHardService" required="" lay-verify="required"></select>
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label  class="layui-form-label"><span class="we-red icon-center">*</span>功能名称：</label>
+					<div class="layui-input-block">
+						<select id="hardStardardlist" name="serviceStandard" lay-filter="selectHardStandard" required="" lay-verify="required"></select>
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label  class="layui-form-label"><span class="we-red icon-center">*</span>硬件单价：</label>
+					<div class="layui-input-block">
+						<input type="text" id="hardUnitPrice"  required="" readonly="readonly" lay-verify="required"  class="layui-input"  value="1">
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label  class="layui-form-label"><span class="we-red icon-center">*</span>服务价格：</label>
+					<div class="layui-input-block">
+						<input type="text" id="hardservicePrice"  name="servicePrice" required="" lay-verify="required"  class="layui-input" readonly value="">
+					</div>
+				</div>
+				<input type="text" id="addHardPayNum" hidden="hidden" name="payNum" required="" lay-verify="required"  class="layui-input"  value="1">
+				<div class="layui-form-item">
+					<label  class="layui-form-label"><span class="we-red icon-center">*</span>购买期限</label>
+					<div class="layui-input-block">
+						<select name="times">
+							<option value="3" >三个月</option>
+							<option value="6" >半年</option>
+							<option value="12" >一年</option>
+						</select>
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label  class="layui-form-label"><span class="we-red icon-center">*</span>合同金额：</label>
+					<div class="layui-input-block">
+						<input type="text" id="reallyhardPay" name="payPrice" required="" lay-verify="required|money"  class="layui-input" value="0.00">
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label  class="layui-form-label"><span class="we-red icon-center">*</span>折扣：</label>
+					<div class="layui-input-inline" style="width: 110px">
+						<input type="text" id="serviceHardRato" name="payRote" required="" lay-verify="required"  class="layui-input" readonly value="0.00">
+					</div>
+					<div class="layui-form-mid layui-word-aux">%</div>
+				</div>
+				<div class="layui-form-item">
+					<label  class="layui-form-label"><span class="we-red icon-center">*</span>销售批次：</label>
+					<div class="layui-input-block">
+						<select name="saleBatch" disabled="true">
+							<option value="2" >二次营销</option>
+							<option value="1" >首次营销</option>
+						</select>
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label  class="layui-form-label" ><span class="we-red icon-center">*</span>销售渠道：</label>
+					<div class="layui-input-block" >
+						<select name="saleChannel">
+							<option value="2" >线下营销</option>
+							<option value="1" >招投标</option>
+							<option value="3" >自主开通</option>
+						</select>
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label  class="layui-form-label" ><span class="we-red icon-center">*</span>付款方式：</label>
+					<div class="layui-input-block" >
+						<select name="payType">
+							<option value="1" >转账</option>
+							<option value="2" >支付宝</option>
+							<option value="3" >微信</option>
+							<option value="4" >银联</option>
+						</select>
+					</div>
+				</div>
+				
+				<div class="layui-form-item">
+					<label  class="layui-form-label"><span class="we-red icon-center">*</span>签约人：</label>
+					<div class="layui-input-block">
+						<input type="text"  name="signatory" required="" lay-verify="required"  class="layui-input">
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label  class="layui-form-label"><span class="we-red icon-center">*</span>信息录入人：</label>
+					<div class="layui-input-block">
+						<input type="text"  th:value="${userName}" name="createUserName" required="" lay-verify="required"  class="layui-input" readonly>
+					</div>
+				</div>
+				<button id="addhardWare" hidden lay-submit="" lay-filter="subHardOrder" ></button>
+			</form>
+			<div class="button-team">
+				<button class="layui-btn layui-btn-sm layui-btn-primary" onclick="cancleAddHardFunction()">取消</button>
+				<button class="layui-btn layui-btn-sm layui-btn-normal"  onclick="sureAddHardFunction()">确认</button>
+			</div>
+		</div>
+		</body>
+		<script src="/lib/layui/layui.js" charset="utf-8"></script>
+        <script th:inline="javascript">
+            var uploadFileUrlConfig=[[${fileUrl}]];
+            var nowTime=[[${nowTime}]];
+            var projectId='[[${projId}]]';
+            var userAccountType=[[${userAccountType}]];
+            var userAccount=[[${userAccount}]];
+            uploadFileUrlConfig="http://10.2.100.17:8060/zuul/api/file/";
+        </script>
+        
+		<script type="text/javascript">
+			layui.config({base: '/js/'}).use('admin');
+			layui.use([ 'layer', 'table','jquery','laydate','admin','form'], function() {
+				var form = layui.form;
+				var	layer = layui.layer;
+				var table = layui.table;
+				var laydate = layui.laydate;
+				var $ = layui.jquery;
+                var addFuncIfrma=null;//新增功能
+                var renewContent=null;//续费
+				var editContent=null;//编辑类容
+				var projInfo="";
+				var SelectHardServiceCode=null;
+				var addFuncHardIfram;
+				var times=3;
+				var rellPrice=0.00;
+
+                laydate.render({ elem: '#addFunction_openTime',value:"2018-10-16",isInitValue: true });
+                laydate.render({ elem: '#addFunction_endTime',value:"2018-10-16",isInitValue: true });
+                laydate.render({ elem: '#addhardFunction_openTime',value:"2018-10-16",isInitValue: true });
+                laydate.render({ elem: '#addhardFunction_endTime',value:"2018-10-16",isInitValue: true });
+
+				  //项目基础设置列表
+			    var version = table.render({
+			        elem: '#version',
+			        url : '/project/index/versionList?projId='+projectId,
+			        method:'post',
+			        cellMinWidth : 60,
+			        page : true,
+			        limits : [10,20,30],
+			        limit : 10,
+			        cols : [
+			        		 [
+					            {title: '版本', minWidth:90, align:'center',
+					            	templet:function(iteam) {
+						            	if(iteam.version==1){return  "<span>基础版</span>";
+						            	}else{return  "<span>标准版</span>";}
+					                }
+					            },
+					            {field: 'serviceName', title: '模块名称', minWidth:90, align:'center'},
+					            {field: 'serviceStandard', title: '功能名称', minWidth:90, align:'center'},
+					            {field: 'openTime', title: '开通时间', minWidth:90, align:'center'},
+					            {field: 'endTime', title: '到期时间', align:'center',minWidth:90},
+					            {title: '销售渠道', align:'center',minWidth:90,templet:function(item) { return trunSaleChannel(item);}},
+					            {field: 'servicePrice', title: '总售合同金额（元）', align:'center',minWidth:90},
+					            {field: 'payPrice', title: '总签约合同金额（元）', align:'center',minWidth:90},
+                                {title: '状态', align:'center',minWidth:90,templet:function(item) {return serviceStatus(item);}},
+								{title: '操作', align:'left',minWidth:100,fixed: 'right',templet:function(item) {return optionsbuts(item);}}
+					        ]
+			        	]
+			    });
+			    var software = table.render({
+			        elem: '#software',
+			        url : '/project/index/softwareList?projId='+projectId,
+			        method:'post',
+			        cellMinWidth : 60,
+			        page : true,
+			        limits : [10,20,30],
+			        limit : 10,
+			        cols : [
+			        		 [
+					            {field: 'serviceName', title: '模块名称', minWidth:90, align:'center'},
+					            {field: 'serviceStandard', title: '功能名称', minWidth:90, align:'center'},
+					            {field: 'openTime', title: '开通时间', minWidth:90, align:'center' },
+					            {field: 'endTime', title: '到期时间', align:'center',minWidth:90},
+					            {title: '销售渠道', align:'center',minWidth:90,templet:function(item) { return trunSaleChannel(item);}},
+					            {field: 'servicePrice', title: '总售合同金额（元）', align:'center',minWidth:90},
+					            {field: 'payPrice', title: '总签约合同金额（元）', align:'center',minWidth:90},
+                                {title: '状态', align:'center',minWidth:90,templet:function(item) {return serviceStatus(item);}},
+					            {title: '操作', align:'left',minWidth:100,fixed: 'right',templet:function(item) {return optionsbuts(item);}}
+					        ]
+			        	]
+			    });
+			   /*  var hardware = table.render({
+			        elem: '#hardware',
+			        url : '/project/index/hardwareList?projId='+projectId,
+			        method:'post',
+			        cellMinWidth : 60,
+			        page : true,
+			        limits : [10,20,30],
+			        limit : 10,
+			        cols : [
+			        		 [
+					            {field: 'serviceName', title: '硬件名称', minWidth:90, align:'center'},
+					            {field: 'serviceStandard', title: '规格名称', minWidth:90, align:'center'},
+					            {field: 'openTime', title: '开通时间', minWidth:90, align:'center' },
+					            {field: 'endTime', title: '到期时间', align:'center',minWidth:90},
+					            {title: '销售渠道', align:'center',minWidth:90,templet:function(item) { return trunSaleChannel(item);}},
+					            {field: 'servicePrice', title: '总售合同金额（元）', align:'center',minWidth:90},
+					            {field: 'payPrice', title: '总签约合同金额（元）', align:'center',minWidth:90},
+					            {title: '状态', align:'center',minWidth:90,templet:function(item) {return serviceStatus(item);}},
+					            {title: '操作', align:'left',minWidth:100,fixed: 'right',templet:function(item) {return optionsbuts(item);}}
+					        ]
+			        	]
+			    }); */
+
+ 				//错误图片
+				window.nofind=function(img){ 
+				    img.src="/images/proj-test.png"; 
+				    img.onerror=null;
+				} 
+			    //返回
+				window.goback=function(){
+				    window.location.href="/project/list/page";
+				}
+			    //添加功能
+                window.addFunction = function(){
+                    addOtherSoftWare();
+			        var mytitle="新增软件";
+                    addFuncIfrma= layer.open({
+                        type: 1,
+                        title: mytitle,
+                        maxmin: true,
+                        area: ['420px', '520px'],
+                        content:$('#addFunctionContent')
+                    });
+			    };
+			   
+			    //添加硬件功能
+                window.addHard = function(){
+                    initHardWareList();
+			        var mytitle="新增硬件";
+                    addFuncHardIfram=addFuncIfrma= layer.open({
+                        type: 1,
+                        title: mytitle,
+                        maxmin: true,
+                        area: ['420px', '520px'],
+                        content:$('#addHardContent')
+                    });
+			    };
+                window.initHardWareList = function(){
+                    $.get("/project/index/hardOtherService",{"projId":projectId},function (res) {
+                        if(res.code==0){
+                            var options='';
+                            var serviceCode='';
+                            res.data.forEach(function (v,index) {
+								var option='<option value="'+v.serviceName+'"   serviceCode="'+v.serviceCode+'">'+v.serviceName+'</option>';
+								options += option;
+								if(index==0){
+									serviceCode=v.serviceCode;
+								}
+                            });
+                            $("#hardWarelist").empty();
+                            $("#hardWarelist").append(options);
+                            initHardStandardList(serviceCode);
+                            form.render();
+						}
+                    });
+				};
+                window.initHardStandardList = function(serviceCode){
+                    $.post("/project/index/hardOtherServiceStandard",{"projId":projectId,"serviceCode":serviceCode},function (res) {
+                        if(res.code==0){
+                            var options='';
+                            var price=null;
+                            var serviceId=null;
+                            res.data.forEach(function (v,index) {
+								var option='<option value="'+v.standard+'" serviceId="'+v.id+'" price="'+v.price+'"  serviceCode="'+v.serviceCode+'">'+v.standard+'</option>';
+								options += option;
+								if(index==0){
+                                    price= v.price;
+                                    serviceId=v.id;
+								}
+                            });
+                            $("#hardservicePrice").val(price);
+                            $("#hardServiceId").val(serviceId);
+                            $("#hardServiceCode").val(serviceCode);
+                            $("#hardUnitPrice").val(price);
+                            $("#hardStardardlist").empty();
+                            $("#hardStardardlist").append(options);
+                            form.render();
+						}
+                    });
+				};
+				//新增软件 模块列表
+				window.addOtherSoftWare=function(){
+				    $.get("/project/index/softOtherWare",{"projId":projectId},function (res) {
+                        if(parseInt(res.code)==0){
+                            var options='';
+                            var parentId='';
+                            res.data.forEach(function(item,index){
+                                var option='<option value="'+item.serviceName+'" parentId="'+item.id+'">'+item.serviceName+'</option>';
+                                options += option;
+                                if(index==0){
+                                	parentId=item.id
+                                }
+							});
+                             $("#softWarelist").empty();
+                             $("#softWarelist").append(options);
+                            addOtherSoftWareStandard(parentId);
+                            form.render();
+                        }
+                    })
+				};
+				
+				//新增软件 模块下 ——》规格列表
+				window.addOtherSoftWareStandard=function(parentId){
+				    $.get("/project/index/softOtherWare",{"projId":projectId,"parentId":parentId},function (res) {
+                        if(parseInt(res.code)==0){
+                            var options='';
+                            var serviceCode='';
+                            var softServiceId='';
+                            var price="0.00";
+                            res.data.forEach(function(v,index){
+                                var option='<option value="'+v.serviceName+'" serviceId="'+v.serviceId+'" price="'+v.price+'">'+v.serviceName+'</option>';
+                                options += option;
+                                if(index==0){
+                                	rellPrice=v.price;
+                                	price=v.price;
+                                	softServiceId=v.serviceId;
+                                }
+							});
+							var thisPrice=parseFloat(price)*times/12;
+                             $("#softWareStandandlist").empty();
+                             $("#softWareStandandlist").append(options);
+							 $("#softWarePrice").val(thisPrice);
+                             $("#softServiceId").val(softServiceId);
+                            form.render();
+                        }
+                    })
+				};
+				
+				
+				
+			    //完结按钮
+			    window.finishFunction =function(projId,serviceId){
+			     layer.confirm('确认要完结服务吗，完结后不可使用该服务？', {
+		            btn : [ '确定', '取消' ]
+		         }, function(index) {
+		            layer.close(index);
+		            var prams={"projectId":projId,"serviceId":serviceId};
+			    	$.post("/project/index/serviceFinish",prams,function(res){
+			    	 if(parseInt(res.code)==0){
+			    	 	window.location.href="/project/index/page?projId="+projectId;
+			    	 }else{
+			    	 	layer.msg("服务繁忙，请稍后再试。。。");
+			    	 }
+			    	})
+		         }); 
+			    }
+
+                //取消
+                window.cancleAddFunction=function () {
+                    layer.close(addFuncIfrma);
+                };
+                //确定
+                window.sureAddFunction=function () {
+					$("#addSoftWare").click();
+					return false;
+                };
+                 //取消
+                window.cancleAddHardFunction=function () {
+                    layer.close(addFuncHardIfram);
+                };
+                //确定
+                window.sureAddHardFunction=function () {
+					$("#addhardWare").click();
+					return false;
+                };
+                
+
+			    //续费功能
+                window.renew = function(item){
+                	rellPrice=item.servicePrice;
+                	var thisPrice=parseFloat(rellPrice)*times/12;
+                	$("#softOrderType").val(2);
+                	$("#softServiceType").val(item.serviceType);
+					$("#softServiceId").val(item.id);
+					$("#softWarePrice").val(thisPrice);
+					$("#serviceRato").val('0.00');
+                    $("#reallyPay").val('0.00');
+					$("#softWarelist").empty();
+					$("#softWareStandandlist").empty();
+					$("#softWarelist").append('<option value="'+item.serviceName+'">'+item.serviceName+'</option>');
+					$("#softWareStandandlist").append('<option value="'+item.serviceStandard+'">'+item.serviceStandard+'</option>');
+			        var mytitle="续费 "+item.serviceName + "(" +item.serviceStandard+ ")";
+                    renewContent= layer.open({
+                        type: 1,
+                        title: mytitle,
+                        maxmin: true,
+                        area: ['420px', '520px'],
+                        content:$('#addFunctionContent')
+                    });
+                    form.render();
+			    };
+                //取消
+                window.cancleRenew=function () {
+                    layer.close(renewContent);
+                };
+                //确定
+                window.goProjectDetail=function () {
+					renewContent= layer.open({
+                        type: 2,
+                        title: "项目详情",
+                        maxmin: true,
+                        area: ['620px', '520px'],
+                        content:"/project/detail/projecectPage?projId="+projectId
+                    });
+                }
+                 //确定
+                window.trunSaleChannel=function (item) {
+                	console.log(item.saleBatch);
+						if(item.orderNum>1){
+							return  "<span>二次营销</span>";
+						}else if(item.saleBatch==1){
+							return "<span>首次营销</span>";}
+						else{
+							return  "<span>二次营销</span>";
+					   }
+                }
+                //确定
+                window.optionsbuts=function (item) {
+					var but1='<shiro:hasPermission name="sys:projectServiceRenew"><a class="layui-btn layui-btn-xs layui-btn-warm" lay-event="renew">续费</a></shiro:hasPermission>\n';
+                    var but2='<shiro:hasPermission name="sys:projectServiceFinish"><a class="layui-btn layui-btn-xs " lay-event="finishFunction">完结</a></shiro:hasPermission>\n';
+                    var but3='<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detailShow">详情</a>';
+             		var buts='';
+             		if(item.serviceStatus==2){//完结项目
+             			buts=but3;
+             		}else if(userAccountType==2){//试用项目
+             			buts=but2+but3;
+             		}else if(item.endDays<=30){
+            		 	buts=but1+but2+but3;
+            		}else{
+            		 	buts=but2+but3;
+            		}
+            		 return buts;
+                };
+                window.serviceStatus=function(item){
+                	 if(item.serviceStatus==2){
+                	 	return '<span style="color:#ccc">'+item.serviceStatusName+'</span>';
+                	}else if(item.serviceStatus==3){//试用项目
+             			return '<span style="color:#dabf44">'+item.serviceStatusName+'</span>';
+             		}else if(item.endDays<=0){
+                        return '<span style="color:red">'+item.serviceStatusName+'</span>';
+					}else if(item.endDays<=30){
+                        return '<span style="color:#7d0303">'+item.serviceStatusName+'</span>';
+					}else{
+                        return '<span style="color:green">'+item.serviceStatusName+'</span>';
+					}
+				};
+
+                //监听工具条
+                table.on('tool(version)', function(obj){
+                    var data = obj.data;
+                    if(obj.event === 'renew'){
+                        renew(data);
+                    } else if(obj.event === 'finishFunction'){
+                        finishFunction(data.projId,data.serviceId)
+                    } else if(obj.event === 'detailShow'){ //详情按钮
+						  var params='projId='+data.projId+'&serviceId='+data.serviceId+'&serviceType='+data.serviceType
+                        window.location.href='/project/detail/page?'+params;
+                    }
+                });
+                //监听工具条
+                table.on('tool(hardware)', function(obj){
+                    var data = obj.data;
+                    if(obj.event === 'renew'){
+                        renew(data);
+                    } else if(obj.event === 'finishFunction'){
+                        finishFunction(data.projId,data.serviceId)
+                    } else if(obj.event === 'detailShow'){
+                          var params='projId='+data.projId+'&serviceId='+data.serviceId+'&serviceType='+data.serviceType
+                        window.location.href='/project/detail/page?'+params;
+                    }
+                });
+                //监听工具条
+                table.on('tool(software)', function(obj){
+                    var data = obj.data;
+                    if(obj.event === 'renew'){
+                        renew(data);
+                    } else if(obj.event === 'finishFunction'){
+                        finishFunction(data.projId,data.serviceId)
+                    } else if(obj.event === 'detailShow'){
+                    	console.log(data.serviceCode);
+                        var params='projId='+data.projId+'&serviceId='+data.serviceId+'&serviceType='+data.serviceType
+                        window.location.href='/project/detail/page?'+params;
+                    }
+                });
+
+                //填完实际合同金额计算 折扣
+                $("#reallyPay").blur(function(){
+                    var rato=(parseFloat($("#reallyPay").val())/ parseFloat($("#softWarePrice").val())).toFixed(4)*100;
+                    $("#serviceRato").val(rato);
+                });
+               
+                //填完实际合同金额计算 折扣
+                $("#addPayNum").blur(function(){
+                    var rato=(parseFloat($("#reallyPay").val())/ parseFloat($("#softWarePrice").val())).toFixed(4)*100;
+                    $("#serviceRato").val(rato);
+                });
+                
+                 //填完硬件实际合同金额计算 折扣
+                $("#reallyhardPay").blur(function(){
+                    var rato=(parseFloat($("#reallyhardPay").val())/parseFloat($("#hardservicePrice").val())).toFixed(4)*100;
+                   	console.log(rato);
+                    $("#serviceHardRato").val(rato);
+                });
+                //填完硬件数量计算 折扣
+                $("#addHardPayNum").blur(function(){
+                	if(!($("#addHardPayNum").val()>=0)){
+                		layer.msg("请填写大于0整数");
+                		$("#addHardPayNum").val("1");
+                		var price=$("#hardUnitPrice").val()
+                		$("#hardservicePrice").val(price);
+                	}else{
+	                	var price=parseFloat($("#addHardPayNum").val())*parseFloat($("#hardUnitPrice").val());
+	                    var rato=(parseFloat($("#reallyhardPay").val())/ parseFloat(price)).toFixed(4)*100;
+	                    $("#serviceHardRato").val(rato);
+	                    $("#hardservicePrice").val(price);
+                	}
+                });
+                //软件服务选择
+                form.on('select(selectSoftWareService)',function (data) {
+					var serviceCode=$(data.elem).find("option:checked").attr("parentId");
+					$("#serviceHardRato").val("0.00");
+					addOtherSoftWareStandard(serviceCode);
+                });
+                
+                //时长选择算金额
+                form.on('select(selectSoftWareTimes)',function (data) {
+                	times=data.value;
+                	price=rellPrice*times/12;
+                	$("#softWarePrice").val(price);
+                });
+                
+                //软件服务下规格选择
+                form.on('select(selectSoftWareStandardService)',function (data) {
+                	var price=$(data.elem).find("option:checked").attr("price");
+                	var thisPrice=price;
+					softServiceId=$(data.elem).find("option:checked").attr("serviceid");
+					alert(softServiceId);
+					rellPrice=price;
+					thisPrice=parseFloat(thisPrice)*times/12;
+                    $("#softWarePrice").val(thisPrice);
+                    $("#softServiceId").val(softServiceId);
+                });
+                
+                //硬件服务选择
+                form.on('select(selectHardService)',function (data) {
+                	var serviceCode=$(data.elem).find("option:checked").attr("serviceCode")
+                	if(serviceCode!=SelectHardServiceCode){
+                		SelectHardServiceCode=serviceCode;
+                		initHardStandardList(serviceCode);
+                	}
+                });
+                //硬件规格选择
+                form.on('select(selectHardStandard)',function (data) {
+                	var unitprice=$(data.elem).find("option:checked").attr("price")
+					var serviceId=$(data.elem).find("option:checked").attr("serviceId");
+					var price=parseFloat($("#addHardPayNum").val()) * parseFloat(unitprice);
+					$("#hardservicePrice").val(price);
+                    $("#hardUnitPrice").val(unitprice);
+                    $("#hardServiceId").val(serviceId);
+                });
+                
+                form.on("submit(subOrder)",function (data) {
+                    $.ajax({
+	                    url:"/project/index/addProjectOrder",
+	                    dataType:"json",
+						contentType: "application/json; charset=utf-8",
+	                    type:"post",
+	                    data:JSON.stringify(data.field),
+	                    success:function (res) {
+							if(parseInt(res.code)==0){
+	                            layer.close(addFuncIfrma);//关闭按钮刷新页面
+								window.location.href="/project/index/page?projId="+projectId;
+							}else{
+								 layer.msg("服务繁忙，请稍后再试。。。");
+							}
+	                    }
+	                   });
+                	return false;
+                });
+                
+                form.on("submit(subHardOrder)",function (data) {
+                    $.ajax({
+	                    url:"/project/index/addProjectOrder",
+	                    dataType:"json",
+						contentType: "application/json; charset=utf-8",
+	                    type:"post",
+	                    data:JSON.stringify(data.field),
+	                    success:function (res) {
+							if(parseInt(res.code)==0){
+	                            layer.close(addFuncIfrma);//关闭按钮刷新页面
+								window.location.href="/project/index/page?projId="+projectId;
+							}else{
+								 layer.msg("服务繁忙，请稍后再试。。。");
+							}
+	                    }
+	                   });
+                	return false;
+                });
+
+				window.resetPassword=function(){
+					$.get("/project/index/resetPassword",{"projId":projectId,"userAccount":userAccount},function(res){
+						layer.msg("密码也回复初始密码。。。");
+					});
+				};
+				
+                //自定义验证规则
+                form.verify({
+                    mustFive: function(value){
+                        if(value.length < 5){
+                            return '至少输入5位';
+                        }
+                    },
+                    pass: [/(.+){6,12}$/, '密码必须6到12位'],
+                    money:function(value){
+                        if(!parseFloat(value) || parseFloat(value)<=0.00){
+                            return '请输入必须大于0数';
+                        }
+                    }
+                });
+			});
+		</script>
+
+
+</html>

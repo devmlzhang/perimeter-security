@@ -1,0 +1,119 @@
+<!doctype html>
+<html xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>统计图表-WeAdmin Frame型后台管理系统-WeAdmin 1.0</title>
+        <meta name="renderer" content="webkit|ie-comp|ie-stand">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+        <meta http-equiv="Cache-Control" content="no-siteapp" />
+		<link rel="stylesheet" href="/css/font.css">
+		<link rel="stylesheet" href="/css/weadmin.css">
+    </head>
+    <style>
+        .proj_add_btn{float: right;margin-right: 20px}
+        .device_add_btn{float: right;margin-right: 20px}
+        .tip-content{padding-top: 10px; padding-right: 20px;display: none}
+        .layui-inline {
+            width: 100%;
+        }
+    </style>
+    <body>
+    <div id="content">
+        <!--项目功能设置表格开始 -->
+        <shiro:hasPermission name="sys:projBaseSetAdd">
+        <div class="layui-inline">
+            <span>项目功能</span>
+            <button class="layui-btn proj_add_btn" data-type="projAdd" >添加</button>
+        </div>
+        </shiro:hasPermission>
+        <form class="layui-form">
+            <table id="projList" lay-filter="projList"></table>
+        </form>
+        <!--项目功能设置表格结束 -->
+
+        <!--设备设置表格开始 -->
+       <!-- <div class="layui-inline">
+            <span>设备设置</span>
+            <button class="layui-btn device_add_btn" >添加设备规格</button>
+        </div>
+        <form class="layui-form">
+            <table id="deviceList" lay-filter="deviceList"></table>
+        </form>-->
+        <!--设备设置表格结束 -->
+        <div id="functions" class="tip-content">
+            <form  class="layui-form " lay-filter="functions" action="">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">功能明细</label>
+                    <div class="layui-input-inline" style="width: 255px;margin-top: 10px">
+                        <input type="tel" id="serviceName"  name="serviceName"  autocomplete="off" class="layui-input">
+                        <input type="hidden" id="id" name="id"  autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">版本</label>
+                    <div id="versions" class="versions">
+                        <input type="radio" id="r1" name="serviceType" value="1"  lay-skin="primary" title="应用市场">
+                        <input type="radio" id="r2" name="serviceType" value="2"  lay-skin="primary" title="标准版">
+                        <input type="radio" id="r3" name="serviceType" value="3"  lay-skin="primary" title="基础版" >
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">规格</label>
+                    <div class="layui-input-block" style="width: 255px">
+                        <input type="text" id="standard"  name="standard" lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">服务编码</label>
+                    <div class="layui-input-inline" style="width: 255px">
+                        <input type="text" id="serviceCode"  name="serviceCode" lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">价格(元)</label>
+                    <div class="layui-input-inline" style="width: 255px">
+                        <input type="text" id="price" name="price"  placeholder="请输入" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-input-block" style="margin-top: 20px;position: center">
+                        <button class="layui-btn" lay-submit="" lay-filter="functionSubmit">确定</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+    </div>
+    <!--项目功能设置工具条开始 -->
+    <script type="text/html" id="barProj">
+
+        {{#  if(d.status == 1){ }}
+        <shiro:hasPermission name="sys:projBaseSetFreeze">
+        <a class="layui-btn layui-btn-danger  layui-btn-xs" lay-event="projFreeze" id="projFreeze">冻结</a>
+        </shiro:hasPermission>
+        {{#  } else { }}
+        <shiro:hasPermission name="sys:projBaseSetFreeze">
+        <a class="layui-btn layui-btn-warm layui-btn-xs" lay-event="projUnfreeze" id="projUnfreeze">解冻</a>
+        </shiro:hasPermission>
+        {{#  } }}
+        <!--<a class="layui-btn layui-btn-xs" lay-event="projFreeze">冻结</a>-->
+        <shiro:hasPermission name="sys:projBaseSetEdit">
+        <a class="layui-btn layui-btn-xs" lay-event="projEdit">编辑</a>
+        </shiro:hasPermission>
+    </script>
+    <!--项目功能设置工具条结束 -->
+
+    <!--设备设置工具条开始 -->
+    <script type="text/html" id="barDevice">
+        <a class="layui-btn layui-btn-xs" lay-event="deviceFreeze">冻结</a>
+        <a class="layui-btn layui-btn-xs" lay-event="deviceEdit">编辑</a>
+    </script>
+    <!--设备设置工具条结束 -->
+
+    <script type="text/javascript" src="/lib/layui/layui.js"></script>
+    <script type="text/javascript" src="/js/base/base.js"></script>
+    </body>
+
+</html>

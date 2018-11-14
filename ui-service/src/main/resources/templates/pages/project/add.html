@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html>
+  
+  <head>
+    <meta charset="UTF-8">
+    <title>添加管理员-WeAdmin Frame型后台管理系统-WeAdmin 1.0</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="/css/font.css">
+	<link rel="stylesheet" href="/css/weadmin.css">
+	<style>
+		hr{border:2;height:2px}
+		button{margin-top:6px}
+		.pull-left{float:left;margin-left:20px;}
+		.pull-right{float:right;margin-right:20px;}
+		.clear{clear:both}
+		.proj-add-content{width:100%;margin-top:20px}
+		.proj-add-content .icon-center{line-height:16px}
+		.proj-add-content .left-content{width:40%; }
+		.proj-add-content .right-content{width:calc(60% - 60px); border: 1px solid #ccc;}
+		.proj-add-content .account-but{margin-top:36px;}
+		.proj-add-content .proj-img{cursor:pointer; border:1px solid #ccc;width:160px;border-radius:12px;height:154px;line-height: 154px;text-align: center;font-size: 18px;font-family: "宋体";}
+		.proj-add-content .right-content .title{text-align: center;line-height: 22px;margin-top: 10px;}
+		.proj-add-content .right-content .bar{width:100%;height:36px;line-height:36px;text-align:center;background: #0099ff;margin-top:10px;margin-buttom:10px;border-radius: 6px;}
+		.proj-add-content .right-content .checkbox-bar{float: left;margin-right: 20px;margin-top: 10px;position: relative}
+		.proj-add-content .right-content .lable-bar{float: left;margin-right:10px;margin-top: 10px;color: #bbb}
+		.proj-add-content .right-content .price{line-height: 24px}
+		.proj-add-content .right-content .checkbox-bar input{position: absolute;top: 8px;left:78px;width:48px;height:18px}
+		.proj-add-content .right-content .hardware{margin-right: 10%}
+		.proj-add-content .right-content hr{width:90%;margin-left:20px}
+		.proj-add-content .right-content .lable-list{margin-left:80px}
+		.proj-add-content .right-content .version{position: relative}
+		.proj-add-content .right-content .taotal-version{position: absolute;left: 88px;top: 10px}
+		.bottom-but{margin: 28px auto;width: 260px;}
+		.apply-marks{margin-left: -49px;margin-bottom: 0px;}
+		.checeked-time{background: #5fb878;}
+		.checek-time{margin-top:10px}
+	</style>
+  </head>
+  
+  <body>
+	  <div class="weadmin-nav">
+			 <button class="layui-btn layui-btn-sm layui-btn-primary pull-right" onclick="goback()">返回</button>
+	  </div>
+
+    <div class="proj-add-content">
+    	<div class="pull-left left-content">
+    	 <form class="layui-form" id="projBaseInfo">
+    		<input type="hidden" name="projId" th:value="${projectId}" >
+    	 	<div class="layui-form-item">
+              <label  class="layui-form-label"><span class="we-red icon-center">*</span>项目公司：</label>
+              <div class="layui-input-block" >
+                  <input type="text"  name="projCompany" required="" lay-verify="required" autocomplete="off" class="layui-input">
+              </div>
+          	</div>
+    	 	<div class="layui-form-item">
+              <label  class="layui-form-label"><span class="we-red icon-center">*</span>项目名称：</label>
+              <div class="layui-input-block" layui-input-inline>
+                  <input type="text"  name="projName" required="" lay-verify="required" autocomplete="off" class="layui-input">
+              </div>
+          	</div>
+    	 	<div class="layui-form-item">
+              <label class="layui-form-label"><span class="we-red icon-center">*</span>项目地区：</label>
+					<div class="layui-input-inline">
+				      <select name="addressProvince" id="privence" lay-filter="selectPrivence" lay-verify="required"  >
+						  <option value="">请选择区域</option>
+					  </select>
+				    </div>
+				    <div class="layui-form-mid layui-word-aux">省</div>
+					<div class="layui-input-inline">
+				      <select name="addressCity" id="city" lay-verify="required" autocomplete="off">
+						  <option value="">请选择区域</option>
+					  </select>
+				    </div>
+				    <div class="layui-form-mid layui-word-aux">市/区</div>
+          	</div>
+    	 	<div class="layui-form-item">
+              <label  class="layui-form-label"><span class="we-red icon-center">*</span>项目地址：</label>
+              <div class="layui-input-block">
+                  <input type="text"  name="projAddress" required="" lay-verify="required" autocomplete="off" class="layui-input">
+              </div>
+          	</div>
+    	 	<div class="layui-form-item">
+              <label  class="layui-form-label"><span class="we-red icon-center">*</span>项目经理：</label>
+              <div class="layui-input-block">
+                  <input type="text"  name="projDirector" required="" lay-verify="required" autocomplete="off" class="layui-input">
+              </div>
+          	</div>
+    	 	<div class="layui-form-item">
+              <label  class="layui-form-label"><span class="we-red icon-center">*</span>联系电话：</label>
+              <div class="layui-input-block">
+                  <input type="text"  name="phone" required="" lay-verify="required" autocomplete="off" class="layui-input">
+              </div>
+          	</div>
+    	 	<div class="layui-form-item">
+              <label  class="layui-form-label"><span class="we-red icon-center">*</span>开工日期：</label>
+              <div class="layui-input-block">
+                   <input type="text" class="layui-input" id="startProjectTime" name="startDate" placeholder="yyyy-MM-dd" required="" lay-verify="required" >
+              </div>
+          	</div>
+    	 	<div class="layui-form-item">
+              <label  class="layui-form-label"><span class="we-red icon-center">*</span>完工日期：</label>
+              <div class="layui-input-block">
+                   <input type="text" class="layui-input" id="endProjectTime" name="endDate" placeholder="yyyy-MM-dd" required="" lay-verify="required" >
+              </div>
+          	</div>
+			 <button  id="projectBaseInfoBut" style="display: none;" lay-submit="" lay-filter="projectBaseInfo"> </button>
+          	</form>
+          	<hr>
+          	<form class="layui-form" id="accountForm">
+          	<div class="pull-left">
+	          	<div class="layui-form-item">
+	              <label  class="layui-form-label"><span class="we-red icon-center">*</span>账号：</label>
+	              <div class="layui-input-inline">
+	                   <input type="text" class="layui-input"  name="userAccount" placeholder="用户账号" required="" lay-verify="required|phone" >
+	              </div>
+	          	</div>
+	          	<div class="layui-form-item">
+	              <label  class="layui-form-label"><span class="we-red icon-center">*</span>密码：</label>
+	              <div class="layui-input-inline">
+	                   <input type="password" class="layui-input"  name="userPassword" placeholder="用户密码" required="" lay-verify="required|pass" >
+	              </div>
+	          	</div>
+          	</div>
+          	<div class="pull-right account-but">
+          		<button class="layui-btn  layui-btn-primary" lay-submit="" lay-filter="createAccount">生成账号</button>
+          	</div>
+          	<div class="layui-form-item">
+              <label  class="layui-form-label"><span class="we-red icon-center">*</span>账户类型：</label>
+              <div class="layui-input-block">
+			   <input type="radio" name="userAccountType" value=1 title="常规账户" checked="" lay-filter="changeAccount" >
+			   <input type="radio" name="userAccountType" value=2 title="试用账户" lay-filter="changeAccount">
+			 </div>
+	        </div>
+          	<div id="account_Of_try" class="layui-form-item">
+              <label  class="layui-form-label" style="width:100px"><span class="we-red icon-center">*</span>截止日期：</label>
+              <div class="layui-input-block">
+			     <input type="text"  class="layui-input" style="width:90%" id="tryEndTime" name="probationEndTime" lay-verify="" placeholder="截止日期"/>
+			 </div>
+	        </div>
+          	</form>
+			<hr>
+			<form class="layui-form" id="createUserForm">
+	        <div class="layui-form-item">
+              <label  class="layui-form-label" style="width:100px"><span class="we-red icon-center">*</span>首次签约人：</label>
+              <div class="layui-input-inline">
+	              <input type="text" class="layui-input" style="width:90%"  name="firsrContractor" placeholder="首次签约人" required="" lay-verify="required" >
+			 </div>
+	        </div>
+			<input name="createUserId" type="hidden"  th:value="${userId}" value="1111"/>
+			<div class="layui-form-item">
+              <label  class="layui-form-label" style="width:100px"><span class="we-red icon-center">*</span>信息录入员：</label>
+              <div class="layui-input-inline">
+	              <input type="text" class="layui-input" style="width:90%" name="createUserName" placeholder="信息录入员" required="" lay-verify="required"  readonly  th:value="${userName}" value="" />
+			 </div>
+	        </div>
+	        <div class="layui-form-item">
+              <label  class="layui-form-label" style="width:100px"><span class="we-red icon-center">*</span>项目来源：</label>
+              <div class="layui-input-inline" >
+				  <select name="projSource" required="" lay-verify="required" style="width:90%">
+					  <option value="1" >招投标</option>
+					  <option value="2" >线下营销</option>
+					  <option value="3" >自助开通</option>
+				  </select>
+			 </div>
+	        </div>
+	        <div class="layui-form-item">
+              <label  class="layui-form-label" style="width:100px">项目备注：</label>
+              <div class="layui-input-block">
+	              <input type="text" class="layui-input" style="width:90%" name="projRemark" placeholder="项目备注">
+			 </div>
+	        </div>
+			<input id="projectImg" type="hidden" name="projImg" value="">
+	        <div class="layui-form-item">
+              <label  class="layui-form-label"><span class="we-red icon-center">*</span>项目图片：</label>
+              <div class="layui-input-block">
+	              <div id="uploadProjImg" class="proj-img">项目图片</div>
+	              <img id="projImg" class="proj-img" style="display:none">
+			 </div>
+	        </div>
+			<button  id="createUserFormBut" style="display: none;" lay-submit="" lay-filter="createUserInfo"> </button>
+	        </form>
+	        <div class="layui-upload">
+	          <button id="testListAction" class="layui-btn layui-btn-sm layui-btn-normal" ><i class="layui-icon"></i>添加附件</button>
+			  <div class="layui-upload-list">
+			    <table class="layui-table">
+			      <thead>
+			        <tr><th>文件名</th><th>文件类型</th><th>操作</th></tr></thead>
+			      <tbody id="uploadfileList">
+				  </tbody>
+			    </table>
+			  </div>
+			</div>
+		</div>
+		<div class="pull-right right-content">
+			<from class="layui-form">
+				<div class="title"> 功能清单 </div>
+				<div class="bar">软件</div>
+				<div class="layui-form-item">
+					<label  class="layui-form-label"><span class="we-red icon-center">*</span>版本类型：</label>
+					<div class="layui-form-item">
+						<div class="layui-input-block version">
+							<input type="checkbox" name="version" lay-skin="primary" value="1" id="mybaseVersion" title="基础版" lay-filter="selectVersion"  /><div class="taotal-version">总额（<span id="baseTotal">0.00</span>）元</div>
+							<div id="baseLable" class="lable-list apply-marks"></div>
+						</div>
+					</div>
+					<div class="layui-input-block version">
+						<input type="checkbox" name="version" lay-skin="primary" value="2" id="standardVersion" title="标准版"  lay-filter="selectVersion" /><div class="taotal-version">总额（<span id="standardTotal">0.00</span>）元</div>
+						<div id="standardLable" class="lable-list apply-marks"></div>
+					</div>
+				</div>
+				<hr>
+				<div class="layui-form-item" pane="">
+					<label  class="layui-form-label">应用市场：</label>
+					<div class="layui-input-block" id="application_mark">
+                    </div>
+				</div>
+				<!-- <div class="bar">硬件</div> -->
+				<div id="hardwarelist"></div>
+				</from>
+				<hr>
+				<form class="layui-form" id="serviceTotalPrice">
+				 <div class="layui-form-item" pane="">
+					<label  class="layui-form-label" style="width:120px"><span class="we-red icon-center">*</span>购买时长：</label>
+					<div class="layui-input-inline">
+						<a class="select-time layui-btn layui-btn-primary layui-btn-xs checeked-time" onclick="selectTime(3,this)">三个月</a>
+						<a class="select-time layui-btn layui-btn-primary layui-btn-xs" onclick="selectTime(6,this)">半年</a>
+						<a class="select-time layui-btn layui-btn-primary layui-btn-xs" onclick="selectTime(12,this)">一年</a>
+					</div>
+				</div>
+				<!-- <div class="layui-form-item" pane="">
+					<label  class="layui-form-label" style="width:120px"><span class="we-red icon-center">*</span>开通时间：</label>
+					<div class="layui-input-inline">
+						<input type="text" class="layui-input" id="serviceStartTime" name="serviceStartTime" placeholder="开通日期" required="" lay-verify="required" >
+					</div>
+				</div>
+				<div class="layui-form-item" pane="">
+					<label  class="layui-form-label" style="width:120px"><span class="we-red icon-center">*</span>到期时间：</label>
+					<div class="layui-input-inline">
+						<input type="text" class="layui-input" id="serviceEndTime" name="serviceEndTime" placeholder="到期时间" required="" lay-verify="required" >
+					</div>
+				</div> -->
+				<div class="layui-form-item" pane="">
+					<label  class="layui-form-label" style="width:120px"><span class="we-red icon-center">*</span>购买服务总额：</label>
+					<div class="layui-input-inline">
+						<input type="text" id="totalPrice" name="totalContractCost" readonly  required="" lay-verify="required" class="layui-input" value="0.00" >
+					</div>
+					<div class="layui-form-mid layui-word-aux">元</div>
+				</div>
+				<!-- <div class="layui-form-item" pane="">
+					<label  class="layui-form-label"  style="width:120px">&nbsp;</label>
+					<label> 软件价格：<span id="caculSotf">0.00</span>元, </label>
+					<label> 硬件价格：<span id="caculHard">0.00</span>元</label>
+				</div> -->
+				<div class="layui-form-item" pane="">
+					<label  class="layui-form-label" style="width:120px"><span class="we-red icon-center">*</span>签订合同总额：</label>
+					<div class="layui-input-inline">
+						<input type="text"  id="reallyPay" name="totalReallyCost"  required="" lay-verify="required|mustNum" class="layui-input"  value="0.00">
+					</div>
+					<div class="layui-form-mid layui-word-aux">元</div>
+				</div>
+				<div class="layui-form-item" pane="">
+					<label  class="layui-form-label" style="width:120px">折扣：</label>
+					<div class="layui-input-inline">
+						<input type="text" id="payRato"  name="serviceRato" readonly required="" lay-verify="required" class="layui-input"  value="0.00">
+					</div>
+					<div class="layui-form-mid layui-word-aux">%</div>
+				</div>
+					<shiro:hasPermission name="sys:projectServiceAndProjAdd">
+						<button id="serviceTotalPriceBut" style="display: none" lay-submit="" lay-filter="servicePrice"></button>
+					</shiro:hasPermission>
+			</form>
+		</div>
+		<div class="clear"></div>
+	</div>
+	<div class="bottom-but">
+		<button class="layui-btn  layui-btn-primary" onclick="goback()">取消</button>
+		<button class="layui-btn  layui-btn-normal" onclick="addBuyProjectAndService()">确认</button>
+	</div>
+	<script src="/lib/layui/layui.js" charset="utf-8"></script>
+	<script th:inline="javascript">
+	 	var projectId=[[${projectId}]];
+	 	var uploadFileUrlConfig=[[${uploadUrl}]];
+	 	var nowTime=[[${nowTime}]];
+        uploadFileUrlConfig="http://10.2.100.17:8060/zuul/api/file";
+	</script>
+    <script type="text/javascript">
+    	layui.config({base: '/js/'}).use('admin');
+    	layui.config({baseUrl: ''}).use('upload');
+        layui.use(['jquery','form','layer','admin','laydate','upload'], function(){
+        var form = layui.form, admin = layui.admin, layer = layui.layer, laydate = layui.laydate, $ = layui.jquery, upload= layui.upload;
+        var selectPrivence=null;
+        var hardtimes=null;
+        var softWareTotal=0.00;
+        var hardWareTotal=0.00;
+        var account = false;//账号是可用
+		var projectBaseInfo=null;//项目基础信息
+		var createUserInfo=null;//创建人信息
+		var softWareInfo=null;//软件信息
+		var hardWareInfo=null;//硬件信息
+		var serviceTatal=null;//服务统计费用
+		var userAccountInfo=null;//用户账号信息
+		var projFile=new Array();
+		var version = 3;
+		var times=3;//默认3个月
+
+        laydate.render({ elem: '#startProjectTime',value:nowTime,isInitValue: true });
+        laydate.render({ elem: '#endProjectTime',value:nowTime,isInitValue: true });
+        laydate.render({ elem: '#tryEndTime'});
+        laydate.render({ elem: '#serviceStartTime',value:nowTime,isInitValue: true });
+        laydate.render({ elem: '#serviceEndTime',value:nowTime,isInitValue: true });
+        $("#account_Of_try").hide();
+
+
+        window.laodServiceInfo=function(type,selectId,selectId_1){
+            $.post("/project/add/serviceList",{type:type},function (res){
+				if(parseInt(res.code)!=0){
+                    layer.msg("服务繁忙，请等待。。。");
+				}else{
+                    var options = '';
+                    var alltotalPrice=0.00;
+                    res.data.forEach(function (v) {
+                        var option1 =  '<div class="layui-form-item apply-marks" pane="">\n' +
+										'<div class="lable-bar">'+v.serviceName+'('+v.totalPrice+')：</div>'+
+										'<div class="layui-input-block">';
+                        var meoptions='';
+                        v.children.forEach(function (v1){
+                            var option='<div class="lable-bar">'+v1.serviceName+'('+v1.price+')元</div>';
+                            meoptions = meoptions + option;
+                        });
+                        var option2 = '</div></div>';
+                        options=options+option1+meoptions+option2;
+                        alltotalPrice = alltotalPrice + v.totalPrice;
+                    });
+                    $(selectId).empty();
+                    $(selectId).append(options);
+                    $(selectId_1).text(alltotalPrice);
+                    form.render();
+				}
+            });
+		};
+        window.laodCityInfo=function(regionCode,selectId){
+			$.get("/project/list/getRegion",{regionCode:regionCode},function (res){
+				if(parseInt(res.code)!=0){
+					layer.msg("服务繁忙，请等待。。。");
+				}else{
+				    var options = '<option value="">请选择区域</option>';
+				    res.data.forEach(function (v) {
+                        var option='<option value="'+v.regionCode+'">'+v.regionName+'</option>';
+                        options = options + option;
+                    });
+                    $(selectId).empty();
+				    $(selectId).append(options);
+				    form.render();
+				}
+			});
+		};
+        //应用市场组装 1 其他市场，  2 基础+组合， 3 标准+组合
+        window.loadApplication=function(types){
+            $.post("/project/add/serviceAppList",{type:types},function (res){
+                if(parseInt(res.code)!=0){
+                    layer.msg("服务繁忙，请等待。。。");
+                }else{
+                    var options='';
+                    res.data.forEach(function (v) {
+                        var versions=3;
+                        if(v.checked && types==2){
+                        	 versions=1;
+                        }else if(v.checked && types==3){
+                        	versions=2;
+                        }
+                        var meoptions='';
+                        var totalPrice=0.00;
+                        v.children.forEach(function (v1){
+                        	totalPrice+=v1.price;
+                            var checked=v1.checked ? 'checked="" disabled="" ' : '';
+                            var myversion=v1.serviceType;
+                            var option='<input type="checkbox" lay-filter="selectSoft" name="mySoftWare" lay-skin="primary" serviceCode="'+v1.serviceCode+'" versions="'+myversion+'" serviceId="'+v1.functionId+'" value="'+v1.price+'" '+checked+' serviceName="'+v.serviceName+'" standard="'+v1.serviceName+'" title="'+v1.serviceName+'（'+v1.price+'元/年）">';
+                            meoptions = meoptions + option;
+                        });
+                         var option1 = '<div class="layui-form-item apply-marks" pane="">\n' +
+                            '\t\t\t\t\t\t\t<span>'+v.serviceName+'('+totalPrice+'元)：</span><br>\n' +
+                            '\t\t\t\t\t\t\t<div class="layui-input-block" style="margin-left:40px">';
+                        var option2 = '</div></div><br>';
+                        options=options+option1+meoptions+option2;
+                    });
+
+                    $("#application_mark").empty();
+                    $("#application_mark").append(options);
+                    form.render();//重新渲染
+                    setTimeout(function () {
+                        caculSotfPrice();
+                    },500);
+                }
+            });
+		};
+        //硬件部分监听
+        window.loadHardWare=function(){
+            $.post("/project/add/serviceList",{type:4},function (res){
+                if(parseInt(res.code)!=0){
+                    layer.msg("服务繁忙，请等待。。。");
+                }else{
+                    var options = '';
+                    res.data.forEach(function (v) {
+                        var option1='<div class="layui-form-item" pane="" >\n' +
+                            			'<label  class="layui-form-label">'+v.serviceName+'：</label>';
+                        v.children.forEach(function (v1) {
+                            var option2='<div class="checkbox-bar hardware">\n' +
+                            				'<input type="checkbox" nums="1" lay-filter="selectHard"  serviceCode="'+v1.serviceCode+'" hardware="myHardware" name="'+v1.serviceCode+'" class="'+v1.serviceCode+'" serviceId="'+v1.id+'" tag="'+v.serviceName+'" lay-skin="primary" id="hard_'+v1.id+'" title="'+v1.standard+'"   value="'+v1.price+'" />\n' +
+											'<input type="text" class="nums" id="num'+v1.id+'" value="1" placeholder="数量" onpropertychange="OnPropChanged (event)">\n' +
+											'<div class="price">价格：'+v1.price+' 元/年</div>\n' +
+								         '</div>';
+                            option1 = option1 + option2;
+                        });
+                        option1 = option1 + '</div>\n';
+                        options = options + option1;
+                    });
+                    $("#hardwarelist").empty();
+                    $("#hardwarelist").append(options);
+                    form.render();//重新渲染
+                    setTimeout(function () {
+                        caculHardfPrice();
+                    },500);
+
+                }
+            });
+		};
+		
+		//计算选择软件费用
+		window.caculSotfPrice=function(){
+			var totalPrice=0.00;
+			var softWareList=new Array();
+            softWareInfo=null;
+			 $("#application_mark").find("input:checkbox[name='mySoftWare']:checked").each(function(i){
+			     var mePrice=$(this).val();
+                 var hardjson={
+    					"serviceName" : $(this).attr("serviceName"),
+    					"serviceId" : $(this).attr("serviceid"),
+    					"serviceCode" : $(this).attr("serviceCode"),
+    					"serviceStandard" : $(this).attr("standard"),
+    					"servicePrice" : mePrice,
+    					"payNum" : 1,
+    					"serviceType" : $(this).attr("versions"),
+    					"orderType" : 1,
+    					"saleBatch" : "1",
+    					"saleChannel" : "1",
+    					"times":times
+    				};
+                 softWareList.push(hardjson);
+                 totalPrice += parseFloat(mePrice);
+            });
+			softWareTotal=totalPrice;
+            softWareInfo = softWareList;
+            $("#caculSotf").text(softWareTotal);
+            var totalAllPrice=softWareTotal*times/12;
+            $("#totalPrice").val(totalAllPrice);
+		}
+		
+		//计算选择硬件费用
+		window.caculHardfPrice=function(){
+			var totalPrice=0.00;
+            var hardWareList=new Array();
+            hardWareInfo=null;
+			 $("input:checkbox[hardware='myHardware']:checked").each(function(i){
+			 	var ids=$(this).prop("id").substr(5)
+			 	var nums=$('#num'+ids).val();
+			 	var mePrice=$(this).val();
+                 var hardjson={
+    					"serviceName" : $(this).attr("tag"),
+    					"serviceId" : $(this).attr("serviceid"),
+                        "serviceCode" : $(this).attr("serviceCode"),
+    					"serviceStandard" : $(this).attr("title"),
+    					"servicePrice" : mePrice,
+    					"payNum" : nums,
+    					"serviceType" : 4,
+    					"orderType" : 1,
+    					"saleBatch" : "首次签约",
+    					"saleChannel" : "线下营销"
+    				};
+                 hardWareList.push(hardjson);
+                totalPrice += parseFloat(mePrice)*parseInt(nums);
+            });
+            hardWareTotal=totalPrice;
+            hardWareInfo=hardWareList;
+            var totalAllPrice=(hardWareTotal+softWareTotal)*times/12;
+            $("#caculHard").text(hardWareTotal);
+            $("#totalPrice").val(totalAllPrice);
+		}
+		//时长选择计算
+		window.selectTime=function(data,v){
+			$(".select-time").removeClass("checeked-time");
+			$(v).addClass("checeked-time");
+			times=data;
+			console.log($(v).attr("class"));
+			console.log($(v));
+			console.log(v);
+			caculSotfPrice();
+			form.render();
+		};
+		//硬件数组输入框监听
+		window.linstenbNumsInput=function(){
+			$("#hardwarelist").on('change','.nums',function(event){
+			if(parseInt($(this).val())>0){
+				caculSotfPrice();
+				caculHardfPrice();
+			}else{
+				layer.msg("请输入大于0的整数..");
+				$(this).val("1");
+			}
+			});
+		};
+		//返回
+        window.goback=function(){
+            window.location.href="/project/list/page";
+        };
+       
+        //最后提交信息    
+        window.buyProjectService=function(){
+            if(!account){
+                layer.msg("请点击生成账号");
+			}else if(projectBaseInfo && createUserInfo && softWareInfo 
+                    && serviceTatal && userAccountInfo){
+                var myprojectInfo=$.extend({"version":version},projectBaseInfo,createUserInfo,userAccountInfo);
+                var params={
+    					"projectInfo" : myprojectInfo,
+    					//"hardWareInfo" : hardWareInfo,
+    					"softWareInfo" : softWareInfo,
+    					"serviceTatal" : serviceTatal,
+    					"projFile" : projFile
+    				};
+					var addParams=JSON.stringify(params)
+					delete addParams.file;//删除多余file 
+                $.ajax({
+					url:"/project/add/butProjectAndService",
+					dataType:"json",
+					contentType: "application/json; charset=utf-8",
+                    type:"post",
+					data:addParams,
+					success:function(res) {
+                        if (parseInt(res.code) != 0) {
+                            layer.msg("服务繁忙，请稍后再试。。。。");
+                        } else {
+                            //返回按钮
+                             goback();
+                        }
+                        ;
+                    }
+                });
+            }
+        };
+            //图片上传
+        window.projUploadInit=function () {
+                var uploadInst = upload.render({
+                    elem: '#uploadProjImg',
+                    url: uploadFileUrlConfig+"/upload/",
+                    data: {'projId':projectId},
+                    before: function(obj){
+                        obj.preview(function(index, file, result){
+                            $('#uploadProjImg').hide();
+                            $('#projImg').attr('src', result);
+                            $('#projImg').show();
+                        });
+                    },
+                    done: function(res){
+                        if(res.errcode != 200){
+                            return layer.msg('上传失败');
+                        }else{
+                            $("#projectImg").val(res.result[0].fileId);
+                        }//成功
+                    },error: function(){
+
+                    }
+                });
+                //更换图片
+                var uploadInst2 = upload.render({
+                    elem: '#projImg',
+                    url: uploadFileUrlConfig+"/upload/",
+                    data: {'projId':projectId},
+                    before: function(obj){
+                        obj.preview(function(index, file, result){
+                            $('#projImg').attr('src', result);
+                        });
+                    }
+                    ,done: function(res){
+                        if(res.errcode != 200){
+                            return layer.msg('上传失败');
+                        }else{
+                            //更改图片 删除上次图片
+                            $.get(uploadFileUrlConfig+"/delete/",{"fid":$("#projectImg").val()},function(res1){
+                                $("#projectImg").val(res.result[0].fileId);
+                            });
+                        }
+                    },error: function(){
+                    }
+                });
+                //附件上传
+                var uploadInst3 = upload.render({
+                elem: '#testListAction',
+                url: uploadFileUrlConfig+"/upload/",
+                data: {'projId':projectId},
+                done: function(res){
+                    if(res.errcode != 200){
+                        return layer.msg('上传失败');
+                    }else{
+                        var file=res.result[0];
+                        projFile.push(file);
+						var trs='<tr><th>'+file.fileName+'</th><th>'+file.fileExt+'</th><th><button class="layui-btn layui-btn-primary layui-btn-xs" onclick="deleteFile(\''+file.fileId+'\',this)">删除</button></th></tr></thead>';
+                        $("#uploadfileList").append(trs);
+                    }//成功
+                }
+            });
+            };
+            
+        window.projFileUpload=function(){
+            $("#testListAction").click();//触发上传文件
+		};
+        window.deleteFile=function(fid,t){
+            //更改图片 删除上次图片
+			var that= $(t);
+            $.get(uploadFileUrlConfig+"/delete/",{"fid":fid},function(res1){
+				that.parent().parent().remove();
+                projFile.forEach(function (v,index) {
+					if(v.fileId==fid){
+                        projFile.splice(index,1);
+                       return ;
+					}
+                });
+            });
+		};
+
+            //填完实际合同金额计算 折扣
+		$("#reallyPay").blur(function(){
+			var rato=(parseFloat($("#reallyPay").val())/ parseFloat($("#totalPrice").val())).toFixed(4)*100;
+			$("#payRato").val(rato);
+		});
+
+		
+
+        //监听版本选择框
+        form.on('checkbox(selectVersion)',function (data) {
+            var flag=$(data.elem).prop("checked");
+            if(flag && 1==data.value){
+           		$("#standardVersion").prop("checked",false);
+           		loadApplication(2);
+           		version=1;
+			}else if(flag && 2==data.value){
+           		$("#mybaseVersion").prop("checked",false);
+           		loadApplication(3);
+                version=2;
+			}else{
+                version=3;
+				loadApplication(1);
+			}
+
+        });
+		//账户更换
+		form.on('radio(changeAccount)', function(data){
+			var v=data.value;
+			if(v==1){
+				$("#reallyPay").attr("lay-verify","required|money");
+				$("#reallyPay").attr("disabled","false");
+				$("#account_Of_try").hide();
+				$("#tryEndTime").attr("lay-verify","");
+			}else{
+				$("#reallyPay").attr("disabled","true");
+				$("#reallyPay").attr("lay-verify","");
+				$("#tryEndTime").attr("lay-verify","required");
+				$("#account_Of_try").show();
+			}
+		});
+        //省份选择监控
+        form.on('select(selectPrivence)', function(data){
+            if(selectPrivence!=data.value){
+                //加载改省份区域信息
+                laodCityInfo(data.value,"#city");
+			}
+            selectPrivence=data.value;
+         });
+        //应用市场选择监控 
+        form.on('checkbox(selectSoft)',function(data){
+       	 caculSotfPrice();
+        });
+         
+        //硬件选择监控
+        form.on('radio(selectHard)',function (data) {
+             var times=$(data.elem).prop("nums");
+             var hardtimes_1=data.elem;
+            if(hardtimes_1==hardtimes){
+                $(data.elem).prop("checked",false);
+                hardtimes=null;
+			}else{
+			 	$(data.elem).prop("checked",true);
+			 	 hardtimes=data.elem;
+			}
+			form.render();
+			caculSotfPrice();
+			caculHardfPrice();
+        });
+        //生成账号校验 一个账号只有一个项目
+        form.on('submit(createAccount)',function(data){
+        	var info=$("#accountForm").serialize();
+        	$.get("/project/add/isHavedAccount",info,function (res) {
+				if(parseInt(res.code)!=0){
+                    layer.msg("服务繁忙，请等待。。。");
+				}else if(res.data){
+                    userAccountInfo=data.field;
+                    account=true;
+                    layer.msg("该账号可用。。。");
+				}else{
+                    layer.msg("该账号也存在，请重新输入。。。。。");
+				}
+            });
+        	return false;
+        });
+         //最后提交购买项目服务 触发验证表单
+		window.addBuyProjectAndService=function(){
+                $("#projectBaseInfoBut").click();
+         };
+        //项目基本信息校验 1
+         form.on('submit(projectBaseInfo)',function(data){
+             //projectBaseInfo=$("#projBaseInfo").serialize();
+             projectBaseInfo=data.field;
+             $("#createUserFormBut").click();
+             console.log(1);
+             return false;
+         });
+        //创建人基本信息 校验2
+         form.on('submit(createUserInfo)',function(data){
+             //createUserInfo=$("#createUserForm").serialize();
+             createUserInfo=data.field;
+             $("#serviceTotalPriceBut").click();
+             console.log(2);
+			 return false;
+         });
+         //服务统计费用 校验3
+         form.on('submit(servicePrice)',function(data){
+             //serviceTatal=$("#serviceTotalPrice").serialize();
+             serviceTatal=data.field;
+             console.log(3);
+             buyProjectService();//购买项目服务
+			 return false;
+         });
+
+
+            //加载标准服务
+        laodServiceInfo(1,'#baseLable','#baseTotal');
+        //加载基本服务
+        laodServiceInfo(2,'#standardLable','#standardTotal');
+        //加载应用市场服务
+        loadApplication(1);
+        //硬件市场
+		//loadHardWare(); 暂时屏蔽
+        //加载区域信息
+        laodCityInfo("","#privence");
+        //监听input数组输入
+        linstenbNumsInput();
+        
+        projUploadInit();
+
+
+        //自定义验证规则
+          form.verify({
+            mustFive: function(value){
+              if(value.length < 5){
+                return '至少输入5位';
+              }
+            },
+            pass: [/(.+){6,12}$/, '密码必须6到12位'],
+            mustNum:function(value){
+            	if(!parseFloat(value) || parseFloat(value)<=0.00){
+            		return '请输入必须大于0数';
+            	}
+            }
+          });
+ 
+        });
+    </script>
+  </body>
+
+</html>

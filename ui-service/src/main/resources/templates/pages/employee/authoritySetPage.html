@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>角色管理-WeAdmin Frame型后台管理系统-WeAdmin 1.0</title>
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+		<link rel="stylesheet" href="/css/font.css">
+		<link rel="stylesheet" href="/css/weadmin.css">
+		<link rel="stylesheet" href="/lib/ztree/zTreeStyle.css"/>
+	</head>
+
+	<body>
+		<div class="weadmin-body">
+			<!-- Ztree -->
+			<div id="layer-zTree">
+				<input type="hidden" id="userId" autocomplete="off" class="layui-input">
+			    <div style="margin-left: 40px">
+			        <ul id="typeTree" class="ztree"></ul>
+			    </div>
+				<div style="margin-left: 150px;margin-top: 40px">
+					<button class="layui-btn " type="submit" lay-submit lay-filter="save">提交</button>
+				</div>
+			</div>
+		</div>
+		<script src="/lib/layui/layui.js" charset="utf-8"></script>
+		<!-- 导入ztree类库 -->
+		<script src="/lib/ztree/jquery-1.8.3.js" charset="utf-8"></script>
+		<script src="/lib/ztree/jquery.ztree.all-3.5.js" charset="utf-8"></script>
+		<!--<script src="/lib/ztree/jquery.ztree.excheck.min" charset="utf-8"></script>-->
+		<script>
+            layui.config({
+                base : "/lib/extends/"
+            }).extend({
+                "mytree" : "mytree"
+            });
+
+            layui.use(['form','layer','table','mytree'],function(){
+                var form = layui.form,
+                    layer = parent.layer === undefined ? layui.layer : top.layer,
+                    $ = layui.jquery,
+                    table = layui.table,
+                    mytree = layui.mytree;
+
+
+                var setting = {
+                    data: {
+                        simpleData: {
+                            enable: true
+                        }
+                    },
+                    check : {
+                        enable : true,
+                        chkStyle : "checkbox",    //复选框
+                        /*chkboxType : {
+                            "Y" : "ps",
+                            "N" : "s"
+                        }*/
+                    },
+                    view : {
+                        showIcon : false,
+                        selectedMulti : true,
+                        showLine : false,
+                        expandSpeed : 'fast',
+                        dblClickExpand : false
+                    },
+                    callback : {
+                        beforeClick : beforeClick,
+                        onCheck : onCheck
+                    }
+                };
+
+                var zNodes;
+                $.post("/employee/getUserMenus",{
+                    userId : $("#userId").val()
+                },function(data){
+                    zNodes = data.data;
+                    form.render('select');//刷新select选择框渲染*/
+                    $.fn.zTree.init($("#typeTree"), setting, zNodes);
+                    var treeObj = $.fn.zTree.getZTreeObj("typeTree");
+                    treeObj.expandAll(true);
+                });
+
+                form.on('submit(save)', function(data){
+                    var arr = [];
+                    var tree = $.fn.zTree.getZTreeObj('typeTree');
+                    var treeData = tree.getCheckedNodes(true);
+                    if (treeData.length != 0) {
+                        for (var i = 0; i < treeData.length; i++) {
+                            /* if (!treeData[i].isParent) {
+                                var json = {
+                                    key : treeData[i].id
+                                };
+                                arr.push(json);
+                            }
+                            */
+                            arr.push(treeData[i].id);
+                        }
+                    }
+                    if(arr.length==0){
+                        layer.alert("请选择！");
+                        return null;
+                    }
+                    console.log(treeData);
+                    console.log("json:"+arr);
+
+                    $.post("/employee/saveUserMenus" ,{
+                        ids : arr.toString(),
+						userId:$("#userId").val()
+                    },function(data){
+						if(data.code=='0'){
+                            layer.closeAll("iframe");
+						    layer.msg("权限设置成功！");
+                            parent.location.reload();
+						}else {
+						    layer.msg("权限设置失败！");
+						}
+                    }
+				);
+
+                    return false;
+                });
+
+                function beforeClick(treeId, treeNode) {
+                    var zTree = $.fn.zTree.getZTreeObj("typeTree");
+                    zTree.checkNode(treeNode, !treeNode.checked, null, true);
+                    return false;
+                }
+                function onCheck(e, treeId, treeNode) {
+                    var zTree = $.fn.zTree.getZTreeObj("typeTree");
+                    var nodes = zTree.getCheckedNodes(true);
+                    v = "";
+                    for (var i = 0, l = nodes.length; i < l; i++) {
+                        if (!nodes[i].isParent) {       //isParent判断是否为父级，也就是是否有下级
+                            v += nodes[i].name + ",";   //获取所选节点的名称
+                        }
+                    }
+                    if (v.length > 0)
+                        v = v.substring(0, v.length - 1);
+                    console.log("xxx:"+v);
+                    /*var userId = $("#userId");
+                    userId.attr("value", v);*/
+                }
+
+
+
+
+
+            });
+
+		</script>
+	</body>
+
+</html>

@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>管理员列表-WeAdmin Frame型后台管理系统-WeAdmin 1.0</title>
+	<meta name="renderer" content="webkit">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+	<link rel="stylesheet" href="/css/font.css">
+	<link rel="stylesheet" href="/css/weadmin.css">
+	<style>
+		table{width: 100%;}
+		.pull-left {float:left;margin-left:20px;}
+		.pull-right{float:right;margin-right:20px;}
+		.table-items{cursor:pointer; width:100%;margin-top:10px; border: 1px solid transparent; box-shadow: 0 0 12px rgba(0,0,0,.4);}
+		.table-items .table-left{float:left;margin-left:20px;margin-right:10px;}
+		.table-items .table-content{float:left;margin-left:20px;margin-right:10px;font-size:16px;line-height:32px;}
+		.table-items .table-content span{margin-right:20px}
+		.table-items .table-status {float:right;position:relative;margin:20px 20px;border-radius: 8px;padding:26px 20px;background: #c2d6ff;text-align: center;line-height: 18px
+		}
+		.clear{clear:both}
+	</style>
+</head>
+<body>
+<div class="weadmin-nav">
+			<span class="layui-breadcrumb">
+		        <a href="">首页</a>
+		        <a><cite>设备管理</cite></a>
+		     </span>
+</div>
+<div class="weadmin-body">
+
+	<div class="layui-row">
+		<form class="layui-form layui-col-md12 " id="searchForm">
+			<div class="layui-form-item layui-col-md12">
+				<span style="margin-left:40px">&nbsp;</span>
+				<div class="layui-inline ">
+					<input class="layui-input" style="width:400px" name="searchName"
+						   placeholder="项目名称/项目经理/电话号码/公司名称" >
+				</div>
+				<button class="layui-btn pull-right" lay-submit lay-filter="addProject"><i class="layui-icon"></i>新增项目</button>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">地区：</label>
+				<div class="layui-input-inline">
+					<select name="addressProvince" id="privence" lay-filter="selectPrivence">
+						<option value="">请选择</option>
+					</select>
+				</div>
+				<div class="layui-form-mid layui-word-aux">省</div>
+				<div class="layui-input-inline">
+					<select name="addressCity" id="city">
+						<option value="">请选择</option>
+					</select>
+				</div>
+				<div class="layui-form-mid layui-word-aux">市</div>
+				<div class="layui-inline">
+					<label class="layui-form-label">项目公司：</label>
+					<div class="layui-input-inline">
+						<input class="layui-input" placeholder="项目公司" name="projectCompany">
+					</div>
+				</div>
+				<div class="layui-inline">
+					<label class="layui-form-label">签约人：</label>
+					<div class="layui-input-inline">
+						<input class="layui-input" placeholder="签约人" name="signatory" >
+					</div>
+				</div>
+				<input type="hidden" name="projectStatus" value="" id="projectStatus">
+			</div>
+			<button style="display: none;" id="searchBut" lay-submit="" lay-filter="sreach" ></button>
+		</form>
+		<div class="layui-form-item">
+			<label  class="layui-form-label" >状态：</label>
+			<button class="layui-btn layui-btn-sm layui-btn-primary status-but" onclick="getProjByStat(1,this)">在建</button>
+			<button class="layui-btn layui-btn-sm layui-btn-primary status-but" onclick="getProjByStat(2,this)">完工</button>
+			<button class="layui-btn layui-btn-sm layui-btn-primary status-but" onclick="getProjByStat(3,this)">即将到期</button>
+			<button class="layui-btn layui-btn-sm layui-btn-primary status-but" onclick="getProjByStat(4,this)">失效</button>
+			<button class="layui-btn layui-btn-sm layui-btn-primary status-but" onclick="getProjByStat(5,this)">使用</button>
+			<button class="layui-btn layui-btn-sm status-but" onclick="getProjByStat(6,this)">全部</button>
+			<button class="layui-btn pull-right" onclick="searchList()"><i class="layui-icon">&#xe615;</i>搜索</button>
+		</div>
+	</div>
+
+	<br>
+	<input type="hidden" id="mypages" value="16">
+	<table  id="itemsBody">
+
+	</table>
+	<div id="pages"></div>
+</div>
+<script src="/lib/layui/layui.js" charset="utf-8"></script>
+<script th:inline="javascript">
+    var uploadFileUrlConfig=[[${uploadUrl}]];
+    var nowTime=[[${nowTime}]];
+    uploadFileUrlConfig="http://10.2.100.17:8060/zuul/api/file/";
+</script>
+<script>
+    layui.config({base: '/js/'}).use('admin');
+    layui.use(['jquery','form','admin','layer','laypage'], function(){
+        var $ = layui.jquery,layer = layui.layer,form = layui.form,laypage =layui.laypage;
+        var projStatus=null;
+        var mypages=null;
+        var selectPrivence=null;
+        //项目状态选定
+        window.getProjByStat = function(status,v){
+            $(".status-but").addClass("layui-btn-primary");
+            $(v).removeClass("layui-btn-primary");
+            $("#projectStatus").val(status);
+        };
+        //项目搜索
+        window.searchProjList=function(pages,data,flag){
+            var params=null;
+            if(pages!=null){
+                params=$.extend({},pages,data);
+            }else{
+                params=data;
+            }
+            console.log(params);
+            console.log(data);
+            $.post("/project/projList",params,function(res){
+                if(parseInt(res.code!=0)){
+                    layer.message("服务繁忙，请稍后再试。。");
+                }else{
+                    var items='';
+                    res.data.forEach(function (v,index) {
+                        var item='<div class="table-items" onclick="goProject(\''+v.projId+'\')">\n' +
+                            '\t\t\t\t\t<div class="table-left"><img src="'+uploadFileUrlConfig+'down?fid='+v.projImg+'" onerror=\'nofind(this);\' width="196" height="146"></div>\n' +
+                            '\t\t\t\t\t<div class="table-content">\n' +
+                            '\t\t\t\t\t\t<strong style="font-size:18px">项目名称：'+v.projName+'</strong>\n' +
+                            '\t\t\t\t\t\t<p><span>项目经理：'+v.projDirector+'</span> <span>项目地址：'+v.projAddress+'</span></p>\n' +
+                            '\t\t\t\t\t\t<p><span>开建时间：'+v.startDate+'</span> <span>到期时间：'+v.endDate+'</span></p>\n' +
+                            '\t\t\t\t\t\t<p>签约人：'+v.firsrContractor+'</p>\n' +
+                            '\t\t\t\t\t</div>\n' +
+                            '\t\t\t\t\t<div class="table-status">\n' +
+                            '\t\t\t\t\t\t<span>在建项目</span>\n' +
+                            '\t\t\t\t\t</div>\n' +
+                            '\t\t\t\t\t<div class="clear"></div>\n' +
+                            '\t\t\t\t</div>';
+                        items+=item;
+                    });
+                    $("#itemsBody").empty();
+                    $("#itemsBody").append(items);
+                    if(flag){
+                        laypage.render({
+                            elem: 'pages',
+                            count:res.count,
+                            groups:5,
+                            jump: function(obj,first){
+                                var pages={page:obj.curr,limit:obj.limit};
+                                if (!first) {
+                                    searchProjList(pages,null,false);
+                                }
+                            }
+                        });
+                    }
+                }
+            });
+        };
+
+        //错误图片
+        window.nofind=function(img){
+            img.src="/images/proj-test.png";
+            img.onerror=null;
+        }
+        window.searchList=function(){
+            $("#searchBut").click();
+        };
+        //跳转项目页
+        window.goProject=function(v){
+            window.location.href="/device/deviceList?projId="+v;
+        };
+
+        window.laodCityInfo=function(regionCode,selectId){
+            $.get("/project/getRegion",{regionCode:regionCode},function (res){
+                if(parseInt(res.code)!=0){
+                    layer.msg("服务繁忙，请等待。。。");
+                }else{
+                    var options = '<option value="">请选择区域</option>';
+                    res.data.forEach(function (v) {
+                        var option='<option value="'+v.regionCode+'">'+v.regionName+'</option>';
+                        options = options + option;
+                    });
+                    $(selectId).empty();
+                    $(selectId).append(options);
+                    form.render();
+                }
+            });
+        };
+
+        //省份选择监控
+        form.on('select(selectPrivence)', function(data){
+            if(selectPrivence!=data.value){
+                //加载改省份区域信息
+                laodCityInfo(data.value,"#city");
+            }
+            selectPrivence=data.value;
+        });
+        //跳转项目新增页
+        form.on('submit(addProject)', function(data){
+            console.log("addProject}")
+            window.location.href="/project/add";
+            return false;
+        });
+        //form search
+        form.on('submit(sreach)', function(data){
+            var searchData = data.field;
+
+            searchProjList(null,searchData,true);
+            return false;
+        });
+
+        //init
+        searchProjList(null,null,true);
+        laodCityInfo("","#privence");
+    });
+</script>
+</body>
+
+</html>

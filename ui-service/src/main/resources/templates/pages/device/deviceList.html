@@ -1,0 +1,485 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.springframework.org/schema/mvc">
+
+<head>
+    <meta charset="UTF-8">
+    <title>设备列表</title>
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta http-equiv="Cache-Control" content="no-siteapp"/>
+    <link rel="stylesheet" href="/css/font.css">
+    <link rel="stylesheet" href="/css/weadmin.css">
+    <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+    <!--[if lt IE 9]>
+    <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+    <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <script type="text/javascript" src="/lib/layui/layui.js"></script>
+    <script th:inline="javascript">
+        var projId = [[${projId}]];
+    </script>
+    <script type="text/javascript" th:inline="none">
+        var $;
+        var form;
+        var keySelonged = [];
+        var keyDeviceType = [];
+        layui.use(['form', 'layer', 'table', 'element'], function () {
+            var element = layui.element;
+            keyDeviceType["1"] = "大华";
+            keyDeviceType["2"] = "海康";
+            //一些事件监听
+            element.on('tab(demo)', function (data) {
+                console.log(data);
+            });
+            $ = layui.jquery;
+            form = layui.form;
+            var table = layui.table;
+            form.render();
+            getSelonged();
+            //服务器
+            table.render({
+                elem: '#deviceServiceForm'
+                , url: '/device/service/dataGrid?projId=' + projId
+                , cols: [[
+                    {title: '序号', type: 'numbers'},
+                    {field: 'deviceName', title: '设备名称'},
+                    {field: 'ip', title: 'IP地址'},
+                    {field: 'remarks', title: '备注信息'}
+                ]]
+                , page: false
+            });
+            //摄像头
+            table.render({
+                elem: '#deviceForm'
+                , url: '/device/dataGrid?projId=' + projId
+                , cols: [[
+                    {title: '序号', type: 'numbers'},
+                    {
+                        field: 'selonged', title: '所属组织', templet: function (d) {
+                            var key = d.selonged;
+                            var name = getDictSelonged(key);
+                            return name;
+                        }
+                    },
+                    {field: 'deviceName', title: '设备名称'},
+                    {
+                        field: 'deviceType', title: '设备类型', templet: function (d) {
+                            var key = d.deviceType;
+                            var name = getDictDeviceType(key);
+                            return name;
+                        }
+                    },
+                    {field: 'deviceId', title: '设备ID'},
+                    {field: 'flowLimit', title: '流量限额'},
+                    {field: 'remoteConfig', title: '远程配置'},
+                    {field: 'remarks', title: '备注信息'}
+                ]]
+                , page: true
+            });
+            //劳务实名
+            table.render({
+                elem: '#deviceLaborForm'
+                , url: '/device/labor/dataGrid?projId=' + projId
+                , cols: [[
+                    {title: '序号', type: 'numbers'},
+                    {field: 'projId', title: '项目ID'},
+                    {
+                        field: 'selonged', title: '所属组织', templet: function (d) {
+                            var key = d.deviceType;
+                            var name = getDictSelonged(key);
+                            return name;
+                        }
+                    },
+                    {field: 'deviceName', title: '设备名称'},
+                    {field: 'deviceId', title: '设备ID'},
+                    {field: 'secretKey', title: '认证密钥'},
+                    {field: 'flowLimit', title: '远程配置'},
+                    {
+                        field: 'isUploadData', title: '数据上传接口', templet: function (d) {
+                            var key = d.isUploadData;
+                            if ('on' == key) {
+                                return "开启";
+                            } else {
+                                return "关闭";
+                            }
+                        }
+                    },
+                    {field: 'remarks', title: '备注信息'}
+                ]]
+            });
+            //塔吊黑匣子
+            table.render({
+                elem: '#deviceCraneForm'
+                , url: '/device/crane/dataGrid?projId=' + projId
+                , cols: [[
+                    {title: '序号', type: 'numbers'},
+                    {
+                        field: 'selonged', title: '所属组织', templet: function (d) {
+                            var key = d.deviceType;
+                            var name = getDictSelonged(key);
+                            return name;
+                        }
+                    },
+                    {field: 'projId', title: '项目ID'},
+                    {field: 'deviceName', title: '设备名称'},
+                    {
+                        field: 'deviceType', title: '设备类型', templet: function (d) {
+                            var key = d.deviceType;
+                            var name = getDictDeviceType(key);
+                            return name;
+                        }
+                    },
+                    {field: 'deviceId', title: '设备ID'},
+                    {field: 'simNumber', title: 'SIM卡号'},
+                    {field: 'secretKey', title: '认证密钥'},
+                    {
+                        field: 'isUploadData', title: '数据上传接口', templet: function (d) {
+                            var key = d.isUploadData;
+                            if ('on' == key) {
+                                return "开启";
+                            } else {
+                                return "关闭";
+                            }
+                        }
+                    },
+                    {field: 'remarks', title: '备注信息'}
+                ]]
+                , page: true
+            });
+            //环境监测
+            table.render({
+                elem: '#deviceEnvironmentalForm'
+                , url: '/device/environmental/dataGrid?projId=' + projId
+                , cols: [[
+                    {title: '序号', type: 'numbers'},
+                    {field: 'projId', title: '项目ID'},
+                    {field: 'deviceName', title: '设备名称'},
+                    {
+                        field: 'deviceType', title: '设备类型', templet: function (d) {
+                            var key = d.deviceType;
+                            var name = getDictDeviceType(key);
+                            return name;
+                        }
+                    },
+                    {field: 'deviceId', title: '设备ID'},
+                    {field: 'simNumber', title: 'SIM卡号'},
+                    {field: 'secretKey', title: '认证密钥'},
+                    {
+                        field: 'isUploadData', title: '数据上传接口', templet: function (d) {
+                            var key = d.isUploadData;
+                            if ('on' == key) {
+                                return "开启";
+                            } else {
+                                return "关闭";
+                            }
+                        }
+                    },
+                    {field: 'remarks', title: '备注信息'}
+                ]]
+                , page: true
+            });
+            //雾炮喷淋
+            table.render({
+                elem: '#deviceSpraylForm'
+                , url: '/device/sprayl/dataGrid?projId=' + projId
+                , cols: [[
+                    {title: '序号', type: 'numbers'},
+                    {field: 'deviceName', title: '设备名称'},
+                    {
+                        field: 'deviceType', title: '设备类型', templet: function (d) {
+                            var key = d.deviceType;
+                            var name = getDictDeviceType(key);
+                            return name;
+                        }
+                    },
+                    {field: 'deviceId', title: '设备ID'},
+                    {
+                        field: 'isUploadData', title: '数据上传接口', templet: function (d) {
+                            var key = d.isUploadData;
+                            if ('on' == key) {
+                                return "开启";
+                            } else {
+                                return "关闭";
+                            }
+                        }
+                    },
+                    {field: 'remarks', title: '备注信息'}
+                ]]
+                , page: true
+            });
+            //升降机黑匣子
+            table.render({
+                elem: '#deviceElevatorForm'
+                , url: '/device/elevator/dataGrid?projId=' + projId
+                , cols: [[
+                    {title: '序号', type: 'numbers'},
+                    {field: 'projId', title: '项目ID'},
+                    {field: 'deviceName', title: '设备名称'},
+                    {
+                        field: 'deviceType', title: '设备类型', templet: function (d) {
+                            var key = d.deviceType;
+                            var name = getDictDeviceType(key);
+                            return name;
+                        }
+                    },
+                    {field: 'deviceId', title: '设备ID'},
+                    {field: 'simNumber', title: 'SIM卡号'},
+                    {field: 'secretKey', title: '认证密钥'},
+                    {
+                        field: 'isUploadData', title: '数据上传接口', templet: function (d) {
+                            var key = d.isUploadData;
+                            if ('on' == key) {
+                                return "开启";
+                            } else {
+                                return "关闭";
+                            }
+                        }
+                    },
+                    {field: 'remarks', title: '备注信息'}
+                ]]
+                , page: true
+            });
+        });
+
+        /**
+         * 获取组织
+         * */
+        function getSelonged() {
+            $.ajax({
+                url: "/device/selonged/dataGrid",
+                type: "post",
+                dataType: "json",
+                success: function (result) {
+                    if (parseInt(result.code) == 0) {
+                        $("#selonged").find("option").remove();
+                        $("#selonged").append("<option></option>");
+                        for (var i = 0; i < result.data.length; i++) {
+                            var data = result.data[i];
+                            $("#selonged").append("<option value=" + data.value + ">" + data.name + "</option>");
+                            var name = data.name;
+                            var value = data.value;
+                            //keySelonged.push({"value":value,name:name});
+                            keySelonged["" + value + ""] = name;
+                        }
+                        console.log(keySelonged);
+                        form.render();
+                    }
+                }
+            });
+        }
+
+        /**
+         * 获取组织名称
+         **/
+        function getDictSelonged(key) {
+            var name = keySelonged["" + key + ""];
+            console.log("key:" + key + "name:" + name);
+            return name;
+        }
+
+        /**
+         * 获取设备类型
+         * **/
+        function getDictDeviceType(key) {
+            var name = keyDeviceType["" + key + ""];
+            console.log("key:" + key + "name:" + name);
+            return name;
+        }
+
+        /**
+         * 新增设备
+         */
+        function deviceAdd() {
+            layui.layer.open({
+                title: "新增设备",
+                type: 2,
+                area: ["770px", "670px"],
+                content: "/device/add?projId=" + projId,
+                end: function (layero, index) {
+                    getSelonged();
+                }
+            })
+        }
+    </script>
+</head>
+<body>
+<input type="hidden" name="projId" th:value="${projId}">
+<button class="layui-btn emp_add_btn" onclick="deviceAdd()" data-type="deviceAdd">新增设备</button>
+<button class="layui-btn layui-btn-sm layui-btn-primary pull-right" style="float: right" onclick="window.location.href='/device/list'">返回</button>
+<div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+    <ul class="layui-tab-title">
+        <li class="layui-this">视频监控</li>
+        <li>劳务实名</li>
+        <li>塔吊黑匣子</li>
+        <li>环境监测</li>
+        <li>雾炮喷淋</li>
+        <li>升降机黑匣</li>
+    </ul>
+    <div class="layui-tab-content" style="height: 100px;">
+        <!--视频监控-->
+        <div class="layui-tab-item layui-show">
+            <form class="layui-form" action="">
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <div class="layui-input-inline">
+                            <input type="text" name="title" placeholder="搜索设备名称" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">所属组织</label>
+                        <div class="layui-input-inline">
+                            <select name="selonged" id="selonged">
+                                <option value=""></option>
+                                <option value="0">正门</option>
+                                <option value="1">后门</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <div class="layui-form">
+                <div style="height: 35px;background-color: #007DDB;">
+                    <label class="layui-form-label" style="color: white;width: 100%;text-align: center">服务器</label>
+                </div>
+                <form class="layui-form">
+                    <table id="deviceServiceForm"></table>
+                </form>
+            </div>
+            <div class="layui-form">
+                <div style="height: 35px;background-color: #007DDB;">
+                    <label class="layui-form-label" style="color: white;width: 100%;text-align: center">摄像头</label>
+                </div>
+                <form class="layui-form">
+                    <table id="deviceForm"></table>
+                </form>
+            </div>
+        </div>
+        <!--劳务实名-->
+        <div class="layui-tab-item">
+            <form class="layui-form" action="">
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <div class="layui-input-inline">
+                            <input type="text" name="title" placeholder="搜索设备名称" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">所属组织</label>
+                        <div class="layui-input-inline">
+                            <select name="interest">
+                                <option value=""></option>
+                                <option value="0">正门</option>
+                                <option value="1">后门</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <div class="layui-form">
+                <form class="layui-form">
+                    <table id="deviceLaborForm"></table>
+                </form>
+            </div>
+        </div>
+        <!--塔吊黑匣子-->
+        <div class="layui-tab-item">
+            <form class="layui-form" action="">
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <div class="layui-input-inline">
+                            <input type="text" name="title" placeholder="搜索设备名称" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">所属组织</label>
+                        <div class="layui-input-inline">
+                            <select name="interest">
+                                <option value=""></option>
+                                <option value="0">正门</option>
+                                <option value="1">后门</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <div class="layui-form">
+                <form class="layui-form">
+                    <table id="deviceCraneForm"></table>
+                </form>
+            </div>
+        </div>
+        <!--环境监测-->
+        <div class="layui-tab-item">
+            <form class="layui-form" action="">
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <div class="layui-input-inline">
+                            <input type="text" name="title" placeholder="搜索设备名称" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">所属组织</label>
+                        <div class="layui-input-inline">
+                            <select name="interest">
+                                <option value=""></option>
+                                <option value="0">正门</option>
+                                <option value="1">后门</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <div class="layui-form">
+                <form class="layui-form">
+                    <table id="deviceEnvironmentalForm"></table>
+                </form>
+            </div>
+        </div>
+        <!--雾炮喷淋-->
+        <div class="layui-tab-item">
+            <form class="layui-form" action="">
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <div class="layui-input-inline">
+                            <input type="text" name="title" placeholder="搜索设备名称" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">所属组织</label>
+                        <div class="layui-input-inline">
+                            <select name="interest">
+                                <option value=""></option>
+                                <option value="0">正门</option>
+                                <option value="1">后门</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <div class="layui-form">
+                <form class="layui-form">
+                    <table id="deviceSpraylForm"></table>
+                </form>
+            </div>
+        </div>
+        <!--升降机黑匣-->
+        <div class="layui-tab-item">
+            <form class="layui-form" action="">
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <div class="layui-input-inline">
+                            <input type="text" name="title" placeholder="搜索设备名称" class="layui-input">
+                        </div>
+                        <label class="layui-form-label">所属组织</label>
+                        <div class="layui-input-inline">
+                            <select name="interest">
+                                <option value=""></option>
+                                <option value="0">正门</option>
+                                <option value="1">后门</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <div class="layui-form">
+                <form class="layui-form">
+                    <table id="deviceElevatorForm"></table>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

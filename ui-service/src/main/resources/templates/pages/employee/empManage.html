@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html xmlns:shiro="http://www.pollix.at/thymeleaf/shiro" xmlns:th="http://www.w3.org/1999/xhtml">
+
+	<head>
+		<meta charset="UTF-8">
+		<title>管理员列表-WeAdmin Frame型后台管理系统-WeAdmin 1.0</title>
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+		<link rel="stylesheet" href="/css/font.css">
+		<link rel="stylesheet" href="/css/weadmin.css">
+		<style>
+			.emp_add_btn{float: right;margin-right: 20px}
+			.layui-inline {
+				width: 100%;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="">
+			<div style="margin-left: 20px;margin-top: 10px">
+
+				<div class="layui-inline">
+					<span>操作员：<span th:text="${operator}"></span></span>
+					<shiro:hasPermission name="sys:employeeEditOrAdd">
+					<button class="layui-btn emp_add_btn" onclick="empAdd()" data-type="empAdd" >添加员工</button>
+				    </shiro:hasPermission>
+				</div>
+				<form class="layui-form">
+				<table class="layui-hide" id="empList" lay-filter="empList"></table>
+				</form>
+			</div>
+		</div>
+
+		<script type="text/html" id="barDemo">
+			{{#  if(d.userAccunt == 'admin'){ }}
+			<!--<shiro:hasPermission name="sys:permissionSet">
+                <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="authority">权限设置</a>
+            </shiro:hasPermission>
+            <shiro:hasPermission name="sys:employeeEditOrAdd">
+                <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+            </shiro:hasPermission>
+            <shiro:hasPermission name="sys:employeeDelete">
+                <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+            </shiro:hasPermission>
+            {{#  if(d.status == 1){ }}
+            <shiro:hasPermission name="sys:employeeLeave">
+                <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="leave">登记离职</a>
+            </shiro:hasPermission>
+            {{#  } else { }}
+            <a class="layui-btn layui-btn-warm layui-btn-xs" lay-event="haveLeave">已经离职</a>
+            {{#  } }}-->
+
+			{{#  } else { }}
+					<shiro:hasPermission name="sys:permissionSet">
+						<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="authority">权限设置</a>
+					</shiro:hasPermission>
+					<shiro:hasPermission name="sys:employeeEditOrAdd">
+						<a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+					</shiro:hasPermission>
+					<shiro:hasPermission name="sys:employeeDelete">
+						<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+					</shiro:hasPermission>
+					{{#  if(d.status == 1){ }}
+					<shiro:hasPermission name="sys:employeeLeave">
+						<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="leave">登记离职</a>
+					</shiro:hasPermission>
+					{{#  } else { }}
+					<a class="layui-btn layui-btn-warm layui-btn-xs" lay-event="haveLeave">已经离职</a>
+					{{#  } }}
+			{{#  } }}
+
+		</script>
+
+		<script src="/lib/layui/layui.js" charset="utf-8"></script>
+		<!-- 导入ztree类库 -->
+		<script src="/lib/ztree/jquery-1.8.3.js" charset="utf-8"></script>
+		<script src="/lib/ztree/jquery.ztree.all-3.5.js" charset="utf-8"></script>
+
+	<script>
+        layui.config({
+            base : "/lib/extends/"
+        }).extend({
+            "mytree" : "mytree"
+        });
+
+        layui.use(['form','layer','table','mytree'],function(){
+            var form = layui.form,
+                layer = parent.layer === undefined ? layui.layer : top.layer,
+                $ = layui.jquery,
+                mytree = layui.mytree,
+                table = layui.table;
+
+            //执行一个 table 实例
+            var tableIns = table.render({
+				elem: '#empList',
+                url : '/employee/empSetList',
+				//cellMinWidth : 60,
+				page : true,
+				limits : [10,20,30],
+				limit : 10,
+				id : "empListTable",
+				cols: [
+                    [ //表头
+                        {field: 'userAccunt', title: '账号', width: 130, align: "center"},
+                        {field: 'userName', title: '姓名', width: 130, align: 'center'},
+                        {field: 'phone', title: '手机号', width: 130, align: 'center'},
+                        {field: 'email', title: '电子邮箱', width: 130, align: 'center'},
+                        {field: 'deptId', title: '部门', align: 'center', width: 130,templet: function(d){
+                                if(d.deptId=='1'){
+                                    return '<span style="color: #294950;">市场部</span>'
+                                }else if(d.deptId=='2'){
+                                    return '<span style="color: #294950;">运营部</span>'
+                                }else if(d.deptId=='3'){
+                                    return '<span style="color: #294950;">财务部</span>'
+                                }
+                            }},
+                        {field: 'roleId', title: '角色等级', align: 'center', width: 130,templet: function(d){
+                                if(d.roleId=='1'){
+                                    return '<span style="color: #294950;">系统管理员</span>'
+                                }else if(d.roleId=='2'){
+                                    return '<span style="color: #294950;">部门管理员</span>'
+                                }else if(d.roleId=='3'){
+                                    return '<span style="color: #294950;">普通员工</span>'
+                                }
+                            }},
+                        {fixed: 'right', minWidth: 30, title: '操作',align: 'center', toolbar: '#barDemo'}
+                    ]
+                ]
+            });
+
+            //监听行工具事件
+            table.on('tool(empList)', function (obj) {
+                var data = obj.data //获得当前行数据
+                    , layEvent = obj.event; //获得 lay-event 对应的值
+                if (layEvent === 'authority') {
+                    authoritySet(data);
+                } else if (layEvent === 'edit') {
+                    addOrUpdateEmp(data);
+                }else if (layEvent === 'del') {
+                    layer.confirm('确定删除选中的用户？', {icon: 3, title: '提示信息'}, function (index) {
+                        $.get("/employee/deleteEmployee",{
+                            userId : data.userId
+                        },function(data){
+                            layer.close(index);
+                            tableIns.reload();
+                            if (data.code=='0'){
+                                layer.msg(data.msg);
+                            } else {
+                                layer.msg(data.msg);
+                            }
+                        })
+                    })
+                }
+                else if (layEvent === 'leave') {
+                    layer.msg('离职');
+                    leaveStatu(data.userId,'LEAVE');
+
+                }else if(layEvent === 'haveLeave'){
+                    leaveStatu(data.userId,'HAVELEAVE');
+				}
+            });
+
+            function leaveStatu(userId,type){
+                var title='';
+                if(type=="Leave"){
+                    title='亲，确定登记离职？';
+                }else {
+                    title='亲，确定恢复离职？？';
+                }
+
+                layer.confirm(title, {icon: 3, title: '提示信息'}, function (index) {
+                    $.post("/employee/leave",  {userId:userId,type:type}, function (res) {
+                        layer.close(index);
+                        if (res.code=='0'){
+                            layer.msg(res.msg);
+                            tableIns.reload();
+                        } else {
+                            layer.msg(res.msg);
+                        }
+                    });
+                });
+
+            }
+
+        });
+
+        /**
+         *@Author :ML.Zhang
+         *@Date :2018/10/18
+         *@Description :添加或编辑员工
+         */
+        function addOrUpdateEmp(edit){
+            var h = "440px";
+            var title = "添加员工";
+            if (edit){
+                h = "280px";
+                title = "编辑员工";
+            }
+            layui.layer.open({
+                title : title,
+                type : 2,
+                area : ["510px","560px"],
+                content : "/employee/empAddPage",
+                success : function(layero, index){
+                    var body = layui.layer.getChildFrame('body', index);
+                    if(edit){
+						//body.find("#password").remove();
+						//body.find("#confirmPassword").remove();
+                        body.find("#userId").val(edit.userId);
+                        body.find(".roleId input[type=radio][value="+edit.roleId+"]").next().find("i").click();
+                        body.find("#userAccunt").val(edit.userAccunt);
+                        body.find("#userName").val(edit.userName);
+                        body.find("#phone").val(edit.phone);
+                        body.find("#email").val(edit.email);
+                        body.find("#deptId").val(edit.deptId);
+                        body.find('select[name="deptId"]').next().find('.layui-anim').children('dd[lay-value='+edit.deptId+']').click();
+                        form.render();
+                    }
+                    setTimeout(function(){
+                        layui.layer.tips('点击此处返回用户列表', '.layui-layer-setwin .layui-layer-close', {
+                            tips: 3
+                        });
+                    },500)
+                }
+            })
+        }
+
+        /**
+         *@Author :ML.Zhang
+         *@Date :2018/10/18
+         *@Description :权限设置
+         */
+        function authoritySet(data){
+            var title = "权限设置";
+            layui.layer.open({
+                title : title,
+                type : 2,
+                area : ["800px","560px"],
+                content : "/employee/authoritySetPage",
+                success : function(layero, index){
+                    var body = layui.layer.getChildFrame('body', index);
+                    if(data){
+                        body.find("#userId").val(data.userId);
+                        form.render();
+                    }
+                    setTimeout(function(){
+                        layui.layer.tips('点击此处返回用户列表', '.layui-layer-setwin .layui-layer-close', {
+                            tips: 3
+                        });
+                    },500)
+                }
+            })
+        }
+
+
+        function empAdd() {
+            addOrUpdateEmp();
+        }
+
+	</script>
+	</body>
+
+</html>

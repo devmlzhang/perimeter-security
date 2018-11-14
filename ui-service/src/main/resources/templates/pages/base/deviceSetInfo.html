@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>统计图表-WeAdmin Frame型后台管理系统-WeAdmin 1.0</title>
+        <meta name="renderer" content="webkit|ie-comp|ie-stand">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+        <meta http-equiv="Cache-Control" content="no-siteapp" />
+        <link rel="stylesheet" href="/css/font.css">
+        <link rel="stylesheet" href="/css/weadmin.css">
+        <style>
+            .deviceFrom{margin-left: 20px}
+            .deviceWidth{width: 100px}
+            .rule{margin-left: 22px}
+        </style>
+    </head>
+    <body>
+        <div class="weadmin-body">
+            <form class="layui-form deviceFrom " action="">
+                <div class="layui-form-item">
+                    <label class="layui-form-label deviceWidth">选择设备类型</label>
+                    <div class="layui-input-inline ">
+                        <select name="quiz">
+                            <option value="">请选择类型</option>
+                            <optgroup label="城市记忆">
+                                <option value="你工作的第一个城市">你工作的第一个城市</option>
+                            </optgroup>
+                            <optgroup label="学生时代">
+                                <option value="你的工号">你的工号</option>
+                                <option value="你最喜欢的老师">你最喜欢的老师</option>
+                            </optgroup>
+                        </select>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label deviceWidth">选择设备名称</label>
+                    <div class="layui-input-inline">
+                        <select name="quiz">
+                            <option value="">请选择类型</option>
+                            <option value="你的工号">你的工号</option>
+                            <option value="你最喜欢的老师">你最喜欢的老师</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label deviceWidth">设备规格属性</label>
+                    <div class="layui-input-inline" style="width: 255px">
+                        <input type="text" id="username" value="222" name="username" lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label deviceWidth">价格(元)</label>
+                    <div class="layui-input-inline" style="width: 255px">
+                        <input type="text" id="city" name="city" lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <span class="rule">规则：<br/><span class="rule">添加设备规格必须填写设备类型、名称、价格</span></span>
+                <div class="layui-form-item">
+                    <div class="layui-input-block" style="margin-top: 20px;margin-left: 120px">
+                        <button class="layui-btn" lay-submit="" lay-filter="demo1">确定</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <script type="text/javascript" src="/lib/layui/layui.js"></script>
+        <script type="text/javascript" src="/js/base/base.js"></script>
+    </body>
+</html>

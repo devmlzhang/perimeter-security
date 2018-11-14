@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>角色管理-WeAdmin Frame型后台管理系统-WeAdmin 1.0</title>
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+		<link rel="stylesheet" href="/css/font.css">
+		<link rel="stylesheet" href="/css/weadmin.css">
+		<style>
+			.pull-left {float:left;margin-left:20px;}
+			.pull-right{float:right;margin-right:20px;margin-top: 6px;}
+			.clear{clear:both}
+			.table-items{width:100%;margin-top:10px; border: 1px solid transparent;}
+			.table-items .table-left{float:left;margin-left:20px;margin-right:10px;}
+			.table-items .table-content{width: 510px;float:left;margin-left:20px;margin-right:10px;font-size:16px;line-height:32px;}
+			.table-items .table-content span{margin-right:20px}
+			.table-items .table-status {float:right;position:relative;margin:20px 20px;border-radius: 8px;padding:26px 20px;background: #c2d6ff;text-align: center;line-height: 18px}
+			.table-items .table-status img{margin-top:20px}
+			.table-items .table-status span{position:absolute;left: 40px;top: 60px;}
+			.table-items .items-2{position: relative}
+			.table-items .margin-pull{position:absolute;left: 220px; top: 0px;}
+			.table-items .proj-version{font-size: 22px;padding:34px 30px;}
+			.button-team{margin: 10px auto; width: 100px}
+			.tip-content{padding-top: 10px; padding-right: 20px;display: none}
+			.proj-list-title{width:100%};
+			.back-but{margin-top:10px}
+		</style>
+	</head>
+
+	<body>
+		<div class="weadmin-nav">
+		<button class="layui-btn layui-btn-sm layui-btn-primary pull-right back-but" onclick="goback()">返回</button>
+		</div>
+		<div class="proj-list">
+			<div class="proj-detail">
+				<div class="table-items">
+					<div class="table-left">
+						<span th:if="${#strings.length(projImg) eq 0}">
+							<img  src="/images/proj-test.png"  width="200" style="max-height:210px">
+						</span>
+						<span th:if="${#strings.length(projImg) gt 0}">
+							<img  th:src="@{${fileUrl}+'down?fid='+${projImg}}"  width="200" style="max-height:210px">
+						</span>
+					</div>
+					<div class="table-content">
+						<strong style="font-size:18px">项目名称：<span th:text="${projName}"></span></strong>
+						<p><span>项目公司：</span><span th:text="${projCompany}"></span></p>
+						<p><span>项目地址：</span><span th:text="${projAddress}"></span></p>
+						<div class="items-2"><p><span>项目经理：</span><span th:text="${projDirector}"></span></p><p class="margin-pull"><span>联系电话：</span><span th:text="${phone}">${phone!''}</span></p></div>
+						<div class="items-2"><p><span>开工日期：</span><span th:text="${#dates.format(startDate,'yyyy-MM-dd')}"></span></p><p class="margin-pull"><span>到期时间：</span><span th:text="${#dates.format(endDate,'yyyy-MM-dd')}"></span></p></div>
+						<div class="items-2" th:if="${probationEndTime!=null}"><p><span>账号截止日期：</span><span th:text="${#dates.format(probationEndTime,'yyyy-MM-dd')}"></span></p></div>
+						<div class="items-2"><p><span>用户账号：</span><span th:text="${userAccount}"></span></p></div>
+					</div>
+					<div class="table-status proj-version" th:switch="${version}">
+						<p th:case="1">基础版</p>
+  						<p th:case="2">标准版</p>
+  						<p th:case="3">应用市场</p>
+					</div>
+					<div class="clear"></div>
+				</div>
+			</div>
+			<hr>
+			<label  class="layui-form-label " style="width: 200px;text-align: left">首次签约人：<span th:text="${firsrContractor}"></span></label>
+			<label  class="layui-form-label " style="width: 220px;text-align: left">售买服务总费用：<span th:text="${totalContractCost}">0</span>元</label>
+			<label  class="layui-form-label " style="width: 220px;text-align: left">签订合同总费用：<span th:text="${totalReallyCost}">0</span>元</label>
+			<label  class="layui-form-label " style="width: 160px;text-align: left">项目来源：<span th:switch="${projSource}">
+						<span th:case="1">招投标</span>
+  						<span th:case="2">线下营销</span>
+  						<span th:case="3">自主开通</span>
+  						</span></label>
+			<hr>
+			<label class="layui-form-label " style="width: 100px"><strong>服务订单清单</strong> </label>
+			<label class="layui-form-label " style="width: 180px">总售价：<span th:text="${servicePriceTotal}">0.00</span>元</label>
+			<label class="layui-form-label " style="width: 180px">总购价：<span th:text="${payPriceTotal}">0.00</span>元</label>
+			<div class="proj-list-title clear"></div>
+			<table class="layui-hide" id="version"></table>
+		</div>
+		
+		</body>
+		<script src="/lib/layui/layui.js" charset="utf-8"></script>
+        <script th:inline="javascript">
+            var uploadFileUrlConfig=[[${uploadUrl}]];
+            var nowTime=[[${nowTime}]];
+            var projectId='[[${projId}]]';
+            var serviceId=[[${serviceId}]];
+            var projectName=[[${projName}]];
+            uploadFileUrlConfig="http://10.2.100.17:8060/zuul/api/file/";
+        </script>
+		<script type="text/javascript">
+			//错误图片
+			function nofind(img){ 
+			    img.src="/images/proj-test.png"; 
+			    img.onerror=null;
+			} 
+			layui.config({base: '/js/'}).use('admin');
+			layui.use([ 'layer', 'table','jquery','laydate','admin'], function() {
+				var form = layui.form;
+				var	layer = layui.layer;
+				var table = layui.table;
+				var laydate = layui.laydate;
+				var $ = layui.jquery;
+                var addFuncIfrma=null;//新增功能
+                var renewContent=null;//续费
+				var editContent=null;//编辑类容
+				var projInfo="";
+
+                laydate.render({ elem: '#addFunction_openTime',value:"2018-10-16",isInitValue: true });
+                laydate.render({ elem: '#addFunction_endTime',value:"2018-10-16",isInitValue: true });
+
+				  //项目基础设置列表
+			    var version = table.render({
+			        elem: '#version',
+			        url : '/project/detail/serviceDetail?projId='+projectId+'&serviceId='+serviceId,
+			        method:'post',
+			        cellMinWidth : 60,
+			        page : true,
+			        limits : [10,20,30],
+			        limit : 10,
+			        cols : [
+			        		 [
+					            {field: 'serviceName', title: '服务名称',  align:'center'},
+					            {field: 'serviceStandard', title: '规格', align:'center'},
+					            {field: 'signatory', title: '签约人', align:'center'},
+					            {field: 'openTime', title: '开通时间',  align:'center'},
+					            {field: 'endTime', title: '到期时间', align:'center'},
+								{field: 'serviceStatusName',title: '状态', align:'center'},
+					            {field: 'servicePrice', title: '销售金额（元）', align:'center'},
+					            {field: 'payPrice', title: '签约金额（元）', align:'center'},
+					            {field: 'payNum', title: '购买数量', align:'center'},
+					            {field: 'payRote', title: '销售折扣（%）', align:'center',templet:function(item) {return '<span>'+item.payRote+'%</span>'}},
+								{field: 'option', title: '操作', align:'center',minWidth:100,fixed: 'right',
+					            	templet:function(item) { return '<button class="layui-btn layui-btn-sm " onclick="addFunction(\''+item.id+'\')">订单详情</button>'; }
+					            }
+					        ]
+			        	]
+			    });
+			    
+			    //返回
+				window.goback=function(){
+				    window.location.href="/project/index/page?projId="+projectId;
+				}
+                window.addFunction = function(v){
+                    addFuncIfrma= layer.open({
+                        type: 2,
+                        title: '订单详情',
+                        maxmin: true,
+                        area: ['800px', '590px'],
+                        content:"/project/detail/orderDetail?orderId="+v+"&projectName="+projectName
+                    });
+			    };
+                //取消
+                window.cancleAddFunction=function () {
+                    layer.close(addFuncIfrma);
+                };
+			});
+		</script>
+
+
+</html>

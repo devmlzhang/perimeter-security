@@ -1,0 +1,772 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.springframework.org/schema/mvc">
+
+<head>
+    <meta charset="UTF-8">
+    <title>设备列表</title>
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta http-equiv="Cache-Control" content="no-siteapp"/>
+    <link rel="stylesheet" href="/css/font.css">
+    <link rel="stylesheet" href="/css/weadmin.css">
+    <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+    <!--[if lt IE 9]>
+    <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+    <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <script type="text/javascript" src="/lib/layui/layui.js"></script>
+    <script type="text/javascript" th:inline="none">
+        var $;
+        var form;
+        layui.use(['form', 'layer', 'table', 'element'], function () {
+            $ = layui.jquery;
+            form = layui.form;
+            getSelonged();
+            form.render();
+            //视频监控
+            form.on('submit(deviceOK)', function (data) {
+                params = data.field;
+                console.log(params);
+                $.ajax({
+                    url: "/device/addSave",
+                    type: "post",
+                    data: params,
+                    dataType: "json",
+                    success: function (result) {
+                        closeAll(result);
+                    }
+                });
+                return false;
+            });
+            //劳务实名
+            form.on('submit(laborOK)', function (data) {
+                params = data.field;
+                console.log(params);
+                $.ajax({
+                    url: "/device/labor/addSave",
+                    type: "post",
+                    data: params,
+                    dataType: "json",
+                    success: function (result) {
+                        closeAll(result);
+                    }
+                });
+                return false;
+            });
+            //塔吊黑匣子
+            form.on('submit(craneOK)', function (data) {
+                params = data.field;
+                console.log(params);
+                $.ajax({
+                    url: "/device/crane/addSave",
+                    type: "post",
+                    data: params,
+                    dataType: "json",
+                    success: function (result) {
+                        closeAll(result);
+                    }
+                });
+                return false;
+            });
+            //环境监测
+            form.on('submit(environmentalOK)', function (data) {
+                params = data.field;
+                console.log(params);
+                $.ajax({
+                    url: "/device/environmental/addSave",
+                    type: "post",
+                    data: params,
+                    dataType: "json",
+                    success: function (result) {
+                        closeAll(result);
+                    }
+                });
+                return false;
+            });
+            //雾炮喷淋
+            form.on('submit(spraylOK)', function (data) {
+                params = data.field;
+                console.log(params);
+                $.ajax({
+                    url: "/device/sprayl/addSave",
+                    type: "post",
+                    data: params,
+                    dataType: "json",
+                    success: function (result) {
+                        closeAll(result);
+                    }
+                });
+                return false;
+            });
+            //升降机黑匣
+            form.on('submit(elevatorOK)', function (data) {
+                params = data.field;
+                console.log(params);
+                $.ajax({
+                    url: "/device/elevator/addSave",
+                    type: "post",
+                    data: params,
+                    dataType: "json",
+                    success: function (result) {
+                        closeAll(result);
+                    }
+                });
+                return false;
+            });
+        });
+
+        /**
+         * 获取组织
+         * */
+        function getSelonged() {
+            $.ajax({
+                url: "/device/selonged/dataGrid",
+                type: "post",
+                dataType: "json",
+                success: function (result) {
+                    if (parseInt(result.code) == 0) {
+                        $("#selonged1").find("option").remove();
+                        $("#selonged2").find("option").remove();
+                        $("#selonged1").append("<option></option>");
+                        $("#selonged2").append("<option></option>");
+                        for (var i = 0; i < result.data.length; i++) {
+                            var data = result.data[i];
+                            $("#selonged1").append("<option value=" + data.value + ">" + data.name + "</option>");
+                            $("#selonged2").append("<option value=" + data.value + ">" + data.name + "</option>");
+                        }
+                        form.render();
+                    }
+                }
+            });
+        }
+
+        /**
+         * 新增组织
+         * */
+        function addSelonged() {
+            layui.layer.open({
+                title: "新增组织",
+                type: 2,
+                area: ["400px", "200px"],
+                content: "/device/selonged/add",
+                end: function (layero, index) {
+                    getSelonged();
+                }
+            })
+        }
+
+        /**
+         * 关闭弹窗
+         */
+        function closeAll(result) {
+            layer.msg(result.result, {icon: 5});
+            if (parseInt(result.errcode) == 0) {
+                var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                setTimeout(function () {
+                    parent.layer.close(index); //再执行关闭
+                }, 300);
+            }
+        }
+    </script>
+</head>
+<body>
+<div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+    <ul class="layui-tab-title">
+        <li class="layui-this">视频监控</li>
+        <li>劳务实名</li>
+        <li>塔吊黑匣子</li>
+        <li>环境监测</li>
+        <li>雾炮喷淋</li>
+        <li>升降机黑匣</li>
+    </ul>
+    <div class="layui-tab-content" style="height: 100px;">
+        <!--视频监控-->
+        <div class="layui-tab-item layui-show">
+
+            <h2 style="padding: 20px"><strong>服务器</strong></h2>
+            <form class="layui-form" action="">
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label" style="width: 100px">流媒体服务器：</label>
+                        <div class="layui-input-inline">
+                            <input type="tel" name="phone" value="162.168.0.0" disabled lay-verify="required|phone"
+                                   autocomplete="off"
+                                   class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">备注信息：</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="email" value="联网" disabled lay-verify="email" autocomplete="off"
+                                   class="layui-input">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label" style="width: 100px">通信服务器：</label>
+                        <div class="layui-input-inline">
+                            <input type="tel" name="phone" disabled value="162.168.0.0" lay-verify="required|phone"
+                                   autocomplete="off"
+                                   class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">备注信息：</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="email" value="联网" disabled lay-verify="email" autocomplete="off"
+                                   class="layui-input">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label" style="width: 100px">报警服务器：</label>
+                        <div class="layui-input-inline">
+                            <input type="tel" name="phone" disabled value="162.168.0.0" lay-verify="required|phone"
+                                   autocomplete="off"
+                                   class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">备注信息：</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="email" disabled value="联网" lay-verify="required" autocomplete="off"
+                                   class="layui-input">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label" style="width: 100px">IPTV服务器：</label>
+                        <div class="layui-input-inline">
+                            <input type="tel" name="phone" disabled value="162.168.0.0" lay-verify="required|phone"
+                                   autocomplete="off"
+                                   class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">备注信息：</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="email" disabled value="联网" lay-verify="required" autocomplete="off"
+                                   class="layui-input">
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <hr class="layui-bg-green" style="margin-top: 20px;margin-bottom: 20px">
+            <h2 style="padding: 20px"><strong>监控设备</strong></h2>
+            <form class="layui-form" action="">
+                <input type="hidden" name="projId" th:value="${projId}">
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label" style="width: 100px">所属组织：</label>
+                        <div class="layui-input-inline">
+                            <select id="selonged1" name="selonged" lay-verify="required" style="width: 100px">
+                            </select>
+                        </div>
+                        <button class="layui-btn" type="button" onclick="addSelonged()">添加组织</button>
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label" style="width: 100px">设备名称：</label>
+                        <div class="layui-input-inline">
+                            <input name="deviceName" lay-verify="required" autocomplete="off"
+                                   class="layui-input">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label" style="width: 100px">设备类型：</label>
+                        <div class="layui-input-inline">
+                            <select name="deviceType" id="deviceType" lay-verify="required" style="width: 100px">
+                                <option value=""></option>
+                                <option value="1">大华</option>
+                                <option value="2">海康</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label" style="width: 100px">设备ID：</label>
+                        <div class="layui-input-inline">
+                            <input name="deviceId" lay-verify="required" autocomplete="off"
+                                   class="layui-input">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label" style="width: 100px">流量限额：</label>
+                        <div class="layui-input-inline">
+                            <input name="flowLimit" lay-verify="required" autocomplete="off"
+                                   class="layui-input">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label" style="width: 100px">远程配置：</label>
+                        <div class="layui-input-inline">
+                            <input name="remoteConfig" lay-verify="required" autocomplete="off"
+                                   class="layui-input">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label" style="width: 100px">备注信息：</label>
+                        <div class="layui-input-inline">
+                            <input name="remarks" lay-verify="required" autocomplete="off"
+                                   class="layui-input">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-input-block">
+                        <button type="reset" class="layui-btn layui-btn-primary" onclick="closeAll()">取消</button>
+                        <button class="layui-btn" lay-submit="" lay-filter="deviceOK">确定</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <!--劳务实名-->
+        <div class="layui-tab-item">
+            <form class="layui-form" action="">
+                <input type="hidden" name="deviceId" value=" "/>
+                <input type="hidden" name="deviceType" value=" "/>
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label" style="width: 100px">项目ID：</label>
+                        <div class="layui-input-inline">
+                            <input name="projId" lay-verify="required" autocomplete="off"
+                                   class="layui-input" th:value="${projId}" disabled>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label" style="width: 100px">所属组织：</label>
+                        <div class="layui-input-inline">
+                            <select id="selonged2" name="selonged" lay-verify="required" style="width: 100px">
+                            </select>
+                        </div>
+                        <button class="layui-btn">添加组织</button>
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label" style="width: 100px">设备名称：</label>
+                        <div class="layui-input-inline">
+                            <input name="deviceName" lay-verify="required" autocomplete="off"
+                                   class="layui-input">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label" style="width: 100px">认证秘钥：</label>
+                        <div class="layui-input-inline">
+                            <input name="secretKey" lay-verify="required" autocomplete="off"
+                                   class="layui-input">
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="layui-bg-green" style="margin-top: 20px;margin-bottom: 20px">
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label" style="width: 100px">进场IP：</label>
+                        <div class="layui-input-inline">
+                            <input name="inIp" lay-verify="required" autocomplete="off"
+                                   class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">MAC地址：</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="inMac" lay-verify="required" autocomplete="off"
+                                   class="layui-input">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label" style="width: 100px">出场IP：</label>
+                        <div class="layui-input-inline">
+                            <input name="outIp" lay-verify="required" autocomplete="off"
+                                   class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">MAC地址：</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="outMac" lay-verify="required" autocomplete="off"
+                                   class="layui-input">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label" style="width: 100px">数据上传接口：</label>
+                        <div class="layui-input-inline">
+                            <input type="checkbox" name="isUploadData" lay-verify="required" lay-skin="switch">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label" style="width: 100px">备注信息：</label>
+                        <div class="layui-input-inline">
+                            <input name="remarks" lay-verify="required" autocomplete="off"
+                                   class="layui-input">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-input-block">
+                        <button type="reset" class="layui-btn layui-btn-primary" onclick="closeAll()">取消</button>
+                        <button class="layui-btn" lay-submit="" lay-filter="laborOK">确定</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <!--塔吊黑匣子-->
+        <div class="layui-tab-item">
+            <form class="layui-form" action="">
+                <input type="hidden" name="selonged" value=" "/>
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label" style="width: 100px">项目ID：</label>
+                        <div class="layui-input-inline">
+                            <input name="projId" lay-verify="required" autocomplete="off"
+                                   class="layui-input" th:value="${projId}" disabled>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label" style="width: 100px">设备名称：</label>
+                        <div class="layui-input-inline">
+                            <input name="deviceName" lay-verify="required" autocomplete="off"
+                                   class="layui-input">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label" style="width: 100px">设备类型：</label>
+                        <div class="layui-input-inline">
+                            <select name="deviceType" id="deviceType" lay-verify="required" style="width: 100px">
+                                <option value=""></option>
+                                <option value="1">大华</option>
+                                <option value="2">海康</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label" style="width: 100px">设备ID：</label>
+                        <div class="layui-input-inline">
+                            <input name="deviceId" lay-verify="required" autocomplete="off"
+                                   class="layui-input">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label" style="width: 100px">SIM卡号：</label>
+                        <div class="layui-input-inline">
+                            <input name="simNumber" lay-verify="required" autocomplete="off"
+                                   class="layui-input">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label" style="width: 100px">认证秘钥：</label>
+                        <div class="layui-input-inline">
+                            <input name="secretKey" lay-verify="required" autocomplete="off"
+                                   class="layui-input">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label" style="width: 100px">数据上传接口：</label>
+                        <div class="layui-input-inline">
+                            <input type="checkbox" name="isUploadData" lay-skin="switch">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label" style="width: 100px">备注信息：</label>
+                        <div class="layui-input-inline">
+                            <input name="remarks" lay-verify="required" autocomplete="off"
+                                   class="layui-input">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-input-block">
+                        <button type="reset" class="layui-btn layui-btn-primary" onclick="closeAll()">取消</button>
+                        <button class="layui-btn" lay-submit="" lay-filter="craneOK">确定</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <!--环境监测-->
+        <div class="layui-tab-item">
+            <form class="layui-form" action="">
+                <input type="hidden" name="selonged" value=" "/>
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label" style="width: 100px">项目ID：</label>
+                        <div class="layui-input-inline">
+                            <input name="projId" lay-verify="required" autocomplete="off"
+                                   class="layui-input" th:value="${projId}" disabled>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label" style="width: 100px">设备名称：</label>
+                        <div class="layui-input-inline">
+                            <input name="deviceName" lay-verify="required" autocomplete="off"
+                                   class="layui-input">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label" style="width: 100px">设备类型：</label>
+                        <div class="layui-input-inline">
+                            <select name="deviceType" id="deviceType" lay-verify="required" style="width: 100px">
+                                <option value=""></option>
+                                <option value="1">大华</option>
+                                <option value="2">海康</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label" style="width: 100px">设备ID：</label>
+                        <div class="layui-input-inline">
+                            <input name="deviceId" lay-verify="required" autocomplete="off"
+                                   class="layui-input">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label" style="width: 100px">SIM卡号：</label>
+                        <div class="layui-input-inline">
+                            <input name="simNumber" lay-verify="required" autocomplete="off"
+                                   class="layui-input">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label" style="width: 100px">认证秘钥：</label>
+                        <div class="layui-input-inline">
+                            <input name="secretKey" lay-verify="required" autocomplete="off"
+                                   class="layui-input">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label" style="width: 100px">数据上传接口：</label>
+                        <div class="layui-input-inline">
+                            <input type="checkbox" name="isUploadData" lay-skin="switch">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label" style="width: 100px">备注信息：</label>
+                        <div class="layui-input-inline">
+                            <input name="remarks" lay-verify="required" autocomplete="off"
+                                   class="layui-input">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-input-block">
+                        <button type="reset" class="layui-btn layui-btn-primary" onclick="closeAll()">取消</button>
+                        <button class="layui-btn" lay-submit="" lay-filter="environmentalOK">确定</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <!--雾炮喷淋-->
+        <div class="layui-tab-item">
+            <form class="layui-form" action="">
+                <input type="hidden" name="selonged" value=" "/>
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label" style="width: 100px">项目ID：</label>
+                        <div class="layui-input-inline">
+                            <input name="projId" lay-verify="required" autocomplete="off"
+                                   class="layui-input" th:value="${projId}" disabled>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label" style="width: 100px">设备名称：</label>
+                        <div class="layui-input-inline">
+                            <input name="deviceName" lay-verify="required" autocomplete="off"
+                                   class="layui-input">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label" style="width: 100px">设备类型：</label>
+                        <div class="layui-input-inline">
+                            <select name="deviceType" id="deviceType" lay-verify="required" style="width: 100px">
+                                <option value=""></option>
+                                <option value="1">大华</option>
+                                <option value="2">海康</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label" style="width: 100px">设备ID：</label>
+                        <div class="layui-input-inline">
+                            <input name="deviceId" lay-verify="required" autocomplete="off"
+                                   class="layui-input">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label" style="width: 100px">与环境监测联动：</label>
+                        <div class="layui-input-inline">
+                            <input type="checkbox" name="isUploadData" lay-skin="switch">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label" style="width: 100px">备注信息：</label>
+                        <div class="layui-input-inline">
+                            <input name="remarks" lay-verify="required" autocomplete="off"
+                                   class="layui-input">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-input-block">
+                        <button type="reset" class="layui-btn layui-btn-primary" onclick="closeAll()">取消</button>
+                        <button class="layui-btn" lay-submit="" lay-filter="spraylOK">确定</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <!--升降机黑匣-->
+        <div class="layui-tab-item">
+            <form class="layui-form" action="" id="deviceElevatorForm">
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label" style="width: 100px">项目ID：</label>
+                        <div class="layui-input-inline">
+                            <input name="projId" lay-verify="required" autocomplete="off"
+                                   class="layui-input" th:value="${projId}" disabled>
+                        </div>
+                    </div>
+                </div>
+                <input name="selonged" type="hidden" value=" "/>
+
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label" style="width: 100px">设备名称：</label>
+                        <div class="layui-input-inline">
+                            <input name="deviceName" lay-verify="required" autocomplete="off"
+                                   class="layui-input">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label" style="width: 100px">设备类型：</label>
+                        <div class="layui-input-inline">
+                            <select name="deviceType" id="deviceType" lay-verify="required" style="width: 100px">
+                                <option value=""></option>
+                                <option value="1">大华</option>
+                                <option value="2">海康</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label" style="width: 100px">设备ID：</label>
+                        <div class="layui-input-inline">
+                            <input name="deviceId" lay-verify="required" autocomplete="off"
+                                   class="layui-input">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label" style="width: 100px">SIM卡号：</label>
+                        <div class="layui-input-inline">
+                            <input name="simNumber" lay-verify="required" autocomplete="off"
+                                   class="layui-input">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label" style="width: 100px">认证秘钥：</label>
+                        <div class="layui-input-inline">
+                            <input name="secretKey" lay-verify="required" autocomplete="off"
+                                   class="layui-input">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label" style="width: 100px">数据上传接口：</label>
+                        <div class="layui-input-inline">
+                            <input type="checkbox" name="isUploadData" lay-skin="switch">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label" style="width: 100px">备注信息：</label>
+                        <div class="layui-input-inline">
+                            <input name="remarks" lay-verify="required" autocomplete="off"
+                                   class="layui-input">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-input-block">
+                        <button type="reset" class="layui-btn layui-btn-primary" onclick="closeAll()">取消</button>
+                        <button class="layui-btn" lay-submit="" lay-filter="elevatorOK">确定</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+
+</html>
