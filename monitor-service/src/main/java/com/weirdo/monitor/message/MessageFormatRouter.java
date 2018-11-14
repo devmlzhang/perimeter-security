@@ -5,6 +5,7 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 
 /**
  * @Author ML.Zhang
@@ -48,13 +49,8 @@ public class MessageFormatRouter  {
         if (message instanceof String) {
             mstext = message.toString();
         } else if (message instanceof byte[]) {
-            try {
-                mstext = new String((byte[]) message, "utf-8");
+            mstext = new String((byte[]) message, StandardCharsets.UTF_8);
 
-            } catch (UnsupportedEncodingException e) {
-                logger.info("二进制流转消息失败");
-                e.printStackTrace();
-            }
         } else {
             throw new IllegalArgumentException("Message must be of type TextMessage");
         }

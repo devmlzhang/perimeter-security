@@ -5,8 +5,7 @@
 function mqtt_connect(){
     var hostname="10.2.100.45";
     var port="61614";
-    var clientId = "weirdo-cliendId"+ parseInt(Math.random() * 100, 10);;
-
+    var clientId = "weirdo-cliendId" + parseInt(Math.random() * 100, 10);
     // Create a client instance
     mqtt_client = new Paho.MQTT.Client(hostname, Number(port), clientId);
     mqtt_client.onConnectionLost = onConnectionLost;
@@ -92,8 +91,7 @@ function onMessageArrived(message) {
     var json = eval('('+message.payloadString+')');
     console.log("message1:"+message.payloadString);
     console.log("message2:"+json.data);
-    //处理消息
-    handler(json.data);
+
 
 }
 

@@ -24,6 +24,7 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 /**
  * <p>
@@ -120,9 +121,9 @@ public class HtmlGenerator {
 		cssResolver.setFileRetrieve(new FileRetrieve() {
 			@Override
 			public void processFromStream(InputStream in,
-										  ReadingProcessor processor) throws IOException {
+										  ReadingProcessor processor) {
 				try (InputStreamReader reader = new InputStreamReader(in,
-						"UTF-8")) {
+                        StandardCharsets.UTF_8)) {
 					int i = -1;
 					while (-1 != (i = reader.read())) {
 						processor.process(i);
@@ -141,7 +142,7 @@ public class HtmlGenerator {
 				InputStream is = conn.getInputStream();
 
 				try (InputStreamReader reader = new InputStreamReader(is,
-						"UTF-8")) {
+                        StandardCharsets.UTF_8)) {
 					int i = -1;
 					while (-1 != (i = reader.read())) {
 						processor.process(i);
