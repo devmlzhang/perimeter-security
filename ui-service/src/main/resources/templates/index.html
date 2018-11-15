@@ -264,7 +264,7 @@
 		</ul>
 		<div class="layui-tab-content">
 			<div class="layui-tab-item layui-show">
-				<iframe src='./pages/welcome.html' frameborder="0" scrolling="yes" class="weIframe"></iframe>
+				<iframe src='/pages/welcome' frameborder="0" scrolling="yes" class="weIframe"></iframe>
 			</div>
 		</div>
 	</div>
@@ -286,11 +286,8 @@
     //			layui.use('admin', function(){
     //			  var admin = layui.admin;
     //			});
-    layui.config({
-        base: './static/js/'
-        ,version: '101100'
-    }).use('admin');
-    layui.use(['jquery','admin'], function(){
+
+    layui.use(['jquery'], function(){
         var $ = layui.jquery;
        /* $(function(){
             var login = JSON.parse(localStorage.getItem("login"));

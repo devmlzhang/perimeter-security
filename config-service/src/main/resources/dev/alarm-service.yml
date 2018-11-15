@@ -41,6 +41,25 @@ pagehelper:
 fileName: 模版.xlsx
 filePath: template/模版.xlsx
 
+#消费者数量  策略选择8  消费者个数为5
+numberofconsumers: 5
+
+  #ringbuffer大小
+bufferSize: 4096
+  #并行处理等待策略
+  # 1 BlockingWaitStrategy
+  # 2 BusySpinWaitStrategy
+  # 3 LiteBlockingWaitStrategy  虚拟机环境使用
+  # 4 PhasedBackoffWaitStrategy.withLock(2, 2, TimeUnit.MILLISECONDS);
+  # 5 SleepingWaitStrategy 物理机环境
+  # 6 TimeoutBlockingWaitStrategy(2, TimeUnit.MILLISECONDS)
+  # 7 YieldingWaitStrategy
+  # 8 SleepingWaitStrategy 1ms
+  #默认 SleepingWaitStrategy
+waitStrategyType: 8
+#跳出错误,部署时候写为true
+ignoreException: true
+
 #日志
 logging:
   #file: C:\\logs\\emp-sys\\plan-service.log(windows)

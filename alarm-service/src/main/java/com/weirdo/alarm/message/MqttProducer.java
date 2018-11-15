@@ -1,19 +1,20 @@
 package com.weirdo.alarm.message;
 
 import com.alibaba.fastjson.JSONObject;
+import com.weirdo.alarm.event.dealMsg.MsgModelEventProducerWithTranslator;
+import com.weirdo.alarm.model.MsgModel;
 import com.weirdo.alarm.model.WebsocketModel;
 import com.weirdo.alarm.service.MqttClientServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-
-
-
+import org.springframework.stereotype.Service;
 
 
 @Component
 @EnableScheduling
+@Service
 public class MqttProducer {
     /**
      * 定时发送主题消息
@@ -22,19 +23,28 @@ public class MqttProducer {
     private String DA_TOPIC = "Topic/Weirdo/DaChange";
     @Autowired
     MqttClientServiceImpl mqttClientService;
+    @Autowired
+    MsgModelEventProducerWithTranslator  msgModelEventProducerWithTranslator;
 
-    private int age = 18;
-    @Scheduled(fixedDelay = 5000)//每隔5秒钟执行这个方法
+
+    @Scheduled(fixedDelay = 1000)//每隔5秒钟执行这个方法
     public void send() {
-        age++;
-        WebsocketModel websocketModel = new WebsocketModel();
-        websocketModel.setData(age);
-        websocketModel.setType("message");
-        websocketModel.setOperation("add");
-        String s = new JSONObject().toJSONString(websocketModel);
-        System.out.println("MqttProducer:" + s);
-        mqttClientService.sendMessage(DA_TOPIC,s);
+
+        String msg = "xx";
+        if (msg != null) {
+            try {
+                MsgModel mm = new MsgModel();
+                mm.setData(39.9205+Math.random()*0.01);
+                mm.setMsgType("A");
+                mm.setOriginaldata(msg);
+                msgModelEventProducerWithTranslator.onData(mm);
+            } catch (Exception e) {
+                e.printStackTrace();
+
+            }
+        }
 
     }
+
 
 }

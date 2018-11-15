@@ -91,6 +91,7 @@ function onMessageArrived(message) {
     var json = eval('('+message.payloadString+')');
     console.log("message1:"+message.payloadString);
     console.log("message2:"+json.data);
+    handldMessage(json.data);
 
 
 }
