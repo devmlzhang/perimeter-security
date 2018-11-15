@@ -20,10 +20,10 @@
 
 	<body>
 		<div class="weadmin-body">
-			<h2>My Map</h2>
-			<div id="main" class="main"></div>
+			<h2>My Map</h2><br>
+			<h3>经度：<span id="longitude" class="main"></span></h3>
+			<h3>纬度：<span id="latitude" class="main"></span></h3>
 			<div id="map" class="map"></div>
-
 		</div>
 	</body>
 	<!--<script src="/static/js/map/ol/3.7/ol.js"></script>-->
@@ -51,10 +51,12 @@
         var map = new BMap.Map("map");
         var point = new BMap.Point(106.632843,26.656165);
         map.centerAndZoom(point, 15);
+        map.enableScrollWheelZoom(true);
 
         function handldMessage(data) {
             console.log(data);
-            $("#main").text(data.longitude);
+            $("#longitude").text(data.longitude);
+            $("#latitude").text(data.latitude);
             alarm(data);
         }
 
