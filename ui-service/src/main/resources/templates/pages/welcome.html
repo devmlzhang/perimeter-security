@@ -9,6 +9,7 @@
 				height: 1000px;
 				width: 100%;
 			}
+
 		</style>
 		<style type="text/css">
 			body, html,#map {overflow: hidden;margin:0;font-family:"微软雅黑";}
@@ -20,6 +21,7 @@
 	<body>
 		<div class="weadmin-body">
 			<h2>My Map</h2>
+			<div id="main" class="main"></div>
 			<div id="map" class="map"></div>
 
 		</div>
@@ -27,9 +29,11 @@
 	<!--<script src="/static/js/map/ol/3.7/ol.js"></script>-->
 	<!--引用百度地图API-->
 	<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=eSKz5wRgjxcze5fYgrOSq0zQaGEnkGm"></script>
+	<script type="text/javascript" src="/static/lib/jquery.min.js" charset="utf-8"></script>
 	<script type="text/javascript" src="/static/lib/layui/layui.js" charset="utf-8"></script>
-	<script type=text/javascript src='/static/lib/jquery.min.js'></script>
 	<script type=text/javascript src='/static/lib/mqtt/mqttws31.js'></script>
+	<script type="text/javascript" src="/static/lib/echarts/echarts.min.js"></script>
+	<script type="text/javascript" src="/static/js/dark.js"></script>
 	<script type=text/javascript src='/static/lib/webSocket.js'></script>
 
 	<script type="text/javascript">
@@ -40,79 +44,31 @@
                 layer = parent.layer === undefined ? layui.layer : top.layer,
                 $ = layui.jquery;
 
-
+            mqtt_connect();
         });
-	</script>
-
-	<script type="text/javascript">
 
 
+        var map = new BMap.Map("map");
+        var point = new BMap.Point(106.632843,26.656165);
+        map.centerAndZoom(point, 15);
 
-        mqtt_connect();
         function handldMessage(data) {
             console.log(data);
-            // 百度地图API功能
-            var map = new BMap.Map("map");
-            map.centerAndZoom(new BMap.Point(116.331398,39.897445),11);
-            map.enableScrollWheelZoom(true);
+            $("#main").text(data.longitude);
+            alarm(data);
         }
 
-        // 用经纬度设置地图中心点
-        function theLocation(){
-            if(document.getElementById("longitude").value != "" && document.getElementById("latitude").value != ""){
-                map.clearOverlays();
-                var new_point = new BMap.Point(document.getElementById("longitude").value,document.getElementById("latitude").value);
-                var marker = new BMap.Marker(new_point);  // 创建标注
-                map.addOverlay(marker);              // 将标注添加到地图中
-                map.panTo(new_point);
-            }
-        }
+        function alarm(data){
+            var pt = new BMap.Point(data.longitude,data.latitude);
+			var myIcon = new BMap.Icon("/static/images/alert.png", new BMap.Size(300,157));
+			var marker = new BMap.Marker(pt,{icon:myIcon});  // 创建标注
+			map.addOverlay(marker);
+		}
+
 	</script>
 
-	<!--<script type="text/javascript">
-        // 百度地图API功能
-        var map = new BMap.Map("map");
-        map.centerAndZoom(new BMap.Point(106.63658,26.653324),15);
 
-        var myP1 = new BMap.Point(106.633366,26.6588175);    //起点
-        var myP2 = new BMap.Point(106.68748,26.578167);    //终点
-        var myIcon = new BMap.Icon("http://lbsyun.baidu.com/jsdemo/img/Mario.png", new BMap.Size(32, 70), {    //小车图片
-            //offset: new BMap.Size(0, -5),    //相当于CSS精灵
-            imageOffset: new BMap.Size(0, 0)    //图片的偏移量。为了是图片底部中心对准坐标点。
-        });
-        var driving2 = new BMap.DrivingRoute(map, {renderOptions:{map: map, autoViewport: true}});    //驾车实例
-        driving2.search(myP1, myP2);    //显示一条公交线路
 
-        window.run = function (){
-            var driving = new BMap.DrivingRoute(map);    //驾车实例
-            driving.search(myP1, myP2);
-            driving.setSearchCompleteCallback(function(){
-                var pts = driving.getResults().getPlan(0).getRoute(0).getPath();    //通过驾车实例，获得一系列点的数组
-                var paths = pts.length;    //获得有几个点
-
-                var carMk = new BMap.Marker(pts[0],{icon:myIcon});
-                map.addOverlay(carMk);
-                i=0;
-                function resetMkPoint(i){
-                    carMk.setPosition(pts[i]);
-                    if(i < paths){
-                        setTimeout(function(){
-                            i++;
-                            resetMkPoint(i);
-                        },100);
-                    }
-                }
-                setTimeout(function(){
-                    resetMkPoint(5);
-                },100)
-
-            });
-        }
-
-        setTimeout(function(){
-            run();
-        },1500);
-	</script>-->
 
 
 </html>

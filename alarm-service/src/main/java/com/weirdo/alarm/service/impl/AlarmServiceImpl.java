@@ -25,7 +25,7 @@ public class AlarmServiceImpl implements AlarmService {
 
     @Override
     public void sendAlarmInfo(MsgModel gm) {
-        mqttClientService.sendMessage(Constant.ALARM_TOPIC, JSONObject.toJSONString(gm.getData()));
+        mqttClientService.sendMessage(Constant.ALARM_TOPIC, JSONObject.toJSONString(gm));
     }
 
     @Override

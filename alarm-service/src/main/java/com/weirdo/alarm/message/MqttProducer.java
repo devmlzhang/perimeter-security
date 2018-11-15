@@ -28,7 +28,7 @@ public class MqttProducer {
     MsgModelEventProducerWithTranslator  msgModelEventProducerWithTranslator;
 
 
-    @Scheduled(fixedDelay = 1000)//每隔5秒钟执行这个方法
+    @Scheduled(fixedDelay = 1000)
     public void send() {
 
         String msg = "xx";

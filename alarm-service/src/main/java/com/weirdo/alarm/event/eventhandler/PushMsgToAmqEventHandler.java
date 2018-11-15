@@ -26,7 +26,6 @@ public class PushMsgToAmqEventHandler implements WorkHandler<MsgModelEvent> {
 	@Override
 	public void onEvent(MsgModelEvent event) throws Exception {
 		MsgModel gm = event.getObject();
-		System.out.println("gm:-------:"+gm);
 		if (gm != null) {
 			boolean check = true;
 			alarmService.sendAlarmInfo(gm);
