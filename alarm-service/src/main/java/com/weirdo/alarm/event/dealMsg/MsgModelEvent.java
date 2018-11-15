@@ -2,7 +2,14 @@ package com.weirdo.alarm.event.dealMsg;
 
 
 import com.weirdo.alarm.model.MsgModel;
-
+/**
+ * <p>
+ *  事件
+ * </p>
+ *
+ * @Author ML.Zhang
+ * @Since 2018/11/15
+ */
 public class MsgModelEvent {
 	private MsgModel object;
 	

@@ -9,16 +9,23 @@ import com.lmax.disruptor.dsl.ProducerType;
 import com.weirdo.alarm.event.config.WaitStrategyManager;
 import com.weirdo.alarm.event.eventhandler.PushMsgToAmqEventHandler;
 import com.weirdo.alarm.event.eventhandler.SaveMsgToDatabaseEventHandler;
-import com.weirdo.alarm.message.MqttProducer;
-import com.weirdo.alarm.service.MessageServiceImpl;
+import com.weirdo.alarm.service.AlarmService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
+
+/**
+ * <p>
+ * DisruptorFactory
+ * </p>
+ *
+ * @Author ML.Zhang
+ * @Since 2018/11/15
+ */
 
 @Service
 public class MsgModelDisruptorFactory {
@@ -26,12 +33,9 @@ public class MsgModelDisruptorFactory {
 	int bufferSize = 1024;
 	static Disruptor<MsgModelEvent> disruptor;
 
-	//private CheckMsgService checkMsgService;// 验证报警校验服务
-	//private PushMsgToAmqProcess pushMsgToAmqProcess;// 推送adsb到amq中
-	//private SaveMsgToDatabaseProcess saveMsgToDatabaseProcess;// 保存到数据库中
 
 	@Autowired
-	private MessageServiceImpl mqttProducer;
+	private AlarmService alarmService;
 
 
 	@Resource
@@ -66,7 +70,7 @@ public class MsgModelDisruptorFactory {
 		for (int i = 0; i < NUMBEROFCONSUMERS; i++) {
 			PushMsgToAmqEventHandler pushMsgToAmqEventHandler = new PushMsgToAmqEventHandler();
 			// 设置判断类
-			pushMsgToAmqEventHandler.setProcess(mqttProducer);
+			pushMsgToAmqEventHandler.setProcess(alarmService);
 			pushMsgToAmqEventHandlers[i] = pushMsgToAmqEventHandler;
 		}
 
@@ -75,7 +79,7 @@ public class MsgModelDisruptorFactory {
 		SaveMsgToDatabaseEventHandler[] savemsg2DatabaseEventHandlers = new SaveMsgToDatabaseEventHandler[1];
 		for (int i = 0; i < 1; i++) {
 			SaveMsgToDatabaseEventHandler saveMsgToDatabaseEventHandler = new SaveMsgToDatabaseEventHandler();
-			saveMsgToDatabaseEventHandler.setProcess(mqttProducer);
+			saveMsgToDatabaseEventHandler.setProcess(alarmService);
 			savemsg2DatabaseEventHandlers[i] = saveMsgToDatabaseEventHandler;
 		}
 

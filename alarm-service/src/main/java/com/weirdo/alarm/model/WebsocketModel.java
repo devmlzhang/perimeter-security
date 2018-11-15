@@ -1,9 +1,25 @@
 package com.weirdo.alarm.model;
-
+/**
+ * <p>
+ * Websocket模型
+ * </p>
+ *
+ * @Author ML.Zhang
+ * @Since 2018/11/15
+ */
 public class WebsocketModel {
-	private String type;  //类型
-	private String operation; //操作  新增（add）、删除（del）、更新（upd）、变化（change）
-	private Object data; //数据类型
+	/**
+	 * 类型
+	 */
+	private String type;
+	/**
+	 * 操作  新增（add）、删除（del）、更新（upd）、变化（change）
+	 */
+	private String operation;
+	/**
+	 * 数据类型
+	 */
+	private Object data;
 	
 	public Object getData() {
 		return data;

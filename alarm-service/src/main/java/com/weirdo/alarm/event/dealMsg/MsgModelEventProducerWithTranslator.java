@@ -8,6 +8,15 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 
+/**
+ * <p>
+ *  事件产生
+ * </p>
+ *
+ * @Author ML.Zhang
+ * @Since 2018/11/15
+ */
+
 @Service
 public class MsgModelEventProducerWithTranslator {
 

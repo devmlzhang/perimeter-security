@@ -1,11 +1,27 @@
 package com.weirdo.alarm.model;
 
-
+/**
+ * <p>
+ *  消息模型
+ * </p>
+ *
+ * @Author ML.Zhang
+ * @Since 2018/11/15
+ */
 public class MsgModel {
 
-	private Object data;   //消息数据模型 入侵警告和设备异常
-	private String originaldata;//消息原始数据
-	private String  msgType;//消息类型   A：alarm，D：device
+	/**
+	 * 消息数据模型
+	 */
+	private Object data;
+	/**
+	 * 消息原始数据
+	 */
+	private String originaldata;
+	/**
+	 * 消息类型
+	 */
+	private String  msgType;
 
 	public Object getData() {
 		return data;

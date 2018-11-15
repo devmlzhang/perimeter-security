@@ -37,4 +37,24 @@ public class MyLatLng {
 		this.longitude=longitude;
 		this.latitude=latitude;
 	}
+
+	@Override
+	public String toString() {
+		return "MyLatLng{" +
+				"m_LoDeg=" + m_LoDeg +
+				", m_LoMin=" + m_LoMin +
+				", m_LoSec=" + m_LoSec +
+				", m_LaDeg=" + m_LaDeg +
+				", m_LaMin=" + m_LaMin +
+				", m_LaSec=" + m_LaSec +
+				", m_Longitude=" + m_Longitude +
+				", m_Latitude=" + m_Latitude +
+				", m_RadLo=" + m_RadLo +
+				", m_RadLa=" + m_RadLa +
+				", Ec=" + Ec +
+				", Ed=" + Ed +
+				", longitude=" + longitude +
+				", latitude=" + latitude +
+				'}';
+	}
 }
