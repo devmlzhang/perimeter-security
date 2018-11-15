@@ -37,10 +37,6 @@ pagehelper:
     params: count=countSql
     auto-runtime-dialect: true
 
-#文件模版名
-fileName: 模版.xlsx
-filePath: template/模版.xlsx
-
 #消费者数量  策略选择8  消费者个数为5
 numberofconsumers: 5
 
@@ -64,7 +60,7 @@ ignoreException: true
 logging:
   #file: C:\\logs\\emp-sys\\plan-service.log(windows)
   #file: /Users/weirdo/logs/emp-sys/plan-service.log(mac)
-  file: /Users/weirdo/logs/emp-sys/report-service.log
+  file: /Users/weirdo/logs/perimeter-security/alarm-service.log
   level:
     root: info
 

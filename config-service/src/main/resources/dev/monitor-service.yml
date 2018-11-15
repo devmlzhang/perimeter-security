@@ -47,7 +47,7 @@ filePath: template/模版.xlsx
 logging:
   #file: C:\\logs\\emp-sys\\plan-service.log(windows)
   #file: /Users/weirdo/logs/emp-sys/plan-service.log(mac)
-  file: /Users/weirdo/logs/emp-sys/report-service.log
+  file: /Users/weirdo/logs/perimeter-security/monitor-service.log
   level:
     root: info
 

@@ -5,7 +5,7 @@
 
     <groupId>com.weirdo</groupId>
     <artifactId>monitor-service</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0.0.RELEASE</version>
     <packaging>jar</packaging>
 
     <name>monitor-service</name>
