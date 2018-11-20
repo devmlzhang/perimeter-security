@@ -1,0 +1,398 @@
+body{
+    overflow: hidden;
+    background-color: #fef7f3;
+}
+
+
+html, body, div, h1, h2, h3, h4, h5, h6, ul, dl, li, dt, dd, p, pre, form, fieldset, table, th, td {
+    margin: 0;
+    padding: 0;
+}
+
+body, td, p, button, input, select, textarea, select {
+    font-size: 12px;
+    font-family: Arial;
+}
+
+p {
+    color: #6b6b6b;
+    margin: 1em 0;
+    font: normal 12px/25px arial;
+}
+a{
+    color: #142220;
+    font-family: "Microsoft YaHei";
+}
+a:hover,.a:hover
+{
+    color: #BA2636;
+    text-decoration: none;
+}
+a:focus
+{
+    outline: none;
+}
+
+
+a:link, a:visited, a:active {
+    text-decoration: none;
+}
+
+
+a.more {
+    white-space: nowrap;
+    zoom: 1;
+}
+ul {
+    list-style: none;
+}
+
+img{
+    border: none;
+    -moz-user-select: none;
+}
+
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+textarea {
+    font: normal 13px/20px arial;
+}
+
+input {
+    border: 1px groove gray;
+    background-color: #e9fde2;
+}
+
+select {
+    border: 1px groove gray;
+}
+
+.taskButton {
+    background: #9F9F9F;
+}
+
+.taskStatusButton {
+    background: url(../images/marker/status/task.png) no-repeat;
+    background-size: 19px 17px;
+    width: 19px;
+    height: 17px;
+    border: 0px;
+    margin: 1px;
+    padding-right: 2px;
+}
+
+.cameraTStatusButton {
+    background: url(../images/marker/poi/cameraT.png) no-repeat;
+    background-size: 19px 17px;
+    width: 19px;
+    height: 17px;
+    border: 0px;
+    margin: 1px;
+    padding-right: 2px;
+}
+
+.cameraFStatusButton {
+    background: url(../images/marker/poi/cameraF.png) no-repeat;
+    background-size: 19px 17px;
+    width: 19px;
+    height: 17px;
+    border: 0px;
+    margin: 1px;
+    padding-right: 2px;
+}
+.radarTStatusButton {
+    background: url(../images/marker/poi/radarT.png) no-repeat;
+    background-size: 19px 17px;
+    width: 19px;
+    height: 17px;
+    border: 0px;
+    margin: 1px;
+    padding-right: 2px;
+}
+
+.radarFStatusButton {
+    background: url(../images/marker/poi/radarF.png) no-repeat;
+    background-size: 19px 17px;
+    width: 19px;
+    height: 17px;
+    border: 0px;
+    margin: 1px;
+    padding-right: 2px;
+}
+.fltButton {
+    background: url(../images/flight.png) no-repeat;
+    background-size: 19px 19px;
+    width: 19px;
+    height: 17px;
+    border: 0px;
+    margin: 2px;
+    padding-right: 2px;
+}
+
+.realButton {
+    background: url(../images/real.png) no-repeat;
+    background-size: 19px 17px;
+    width: 19px;
+    height: 17px;
+    border: 0px;
+    margin: 1px;
+    padding-right: 2px;
+}
+
+.historyButton {
+    background: url(../images/history.png) no-repeat;
+    background-size: 19px 17px;
+    width: 19px;
+    height: 17px;
+    border: 0px;
+    margin: 1px;
+    padding-right: 2px;
+}
+
+.alertButton {
+    background: url(../images/alert.png) no-repeat;
+    background-size: 19px 17px;
+    width: 19px;
+    height: 17px;
+    border: 0px;
+    margin: 1px;
+    padding-right: 2px;
+}
+
+.fullScreen {
+    float: left;
+    padding-right: 10px;
+}
+
+#areaOpt {
+    float: left;
+    width: 300px;
+    height: 20px;
+    padding-right: 5px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.areaButDiv {
+    float: left;
+    height: 20px;
+    padding-left: 10px;
+}
+
+.areaButDiv a {
+    font-weight: normal;
+    font-size: 13px;
+    color: #88BED2;
+    height: 20px;
+}
+
+.areaBut {
+   /* float: left;*/
+}
+
+.pr {
+    padding-right: 10px;
+}
+
+.areaDel {
+    float: left;
+    background-size: 15px 15px;
+    width: 15px;
+    height: 15px;
+    border: 0px;
+    border-style: none;
+    visibility: hidden;
+}
+
+/*
+*鎾斁鍣ㄦ牱寮�
+*/
+#main_play_div ul {
+    list-style-type: none;
+}
+
+#main_play_div li {
+    width: 20px;
+    float: left;
+}
+
+#taskInfoDetailContent ul {
+    list-style-type: none;
+}
+
+#taskInfoDetailContent li {
+    width: 40px;
+    float: left;
+}
+
+.amountspan {
+    float: left;
+    display: none
+}
+
+.alertMsgContent {
+    position: absolute; top: 30px; left: 15px;
+}
+
+
+.welcomeinfo{
+    margin-right: 5px;
+}
+
+.areabt{
+    float:left;
+   /* width:586px;*/
+}
+.toolsearch{
+    width: 300px;
+    display: inline;
+    float: left;
+    margin-top: -2px;
+}
+.seakMiniBtn input[type='image']{
+    margin-left: 10px;
+}
+.infoCss2{
+    width: 220px;
+}
+.areawinLabel1{
+    position: absolute; top: 30px; left: 20px;
+}
+.areawinLabel2{
+    position: absolute; top: 60px; left: 20px
+}
+.areawinLabel3{
+    padding: 2px 25px 2px 2px;
+}
+.areawinLabel4{
+    position: absolute; top: 100px; left: 20px;
+}
+.areawinLabel4 label{
+    padding: 2px 25px 2px 2px;
+}
+.areawinLabel5{
+    position: absolute; top: 140px; left: 20px;
+}
+.maincss{
+    height: 100%; width: 100%; overflow: hidden;
+}
+
+
+/*瀹氫箟婊氬姩鏉￠珮瀹藉強鑳屾櫙 楂樺鍒嗗埆瀵瑰簲妯珫婊氬姩鏉＄殑灏哄*/
+::-webkit-scrollbar {
+    height: 12px;
+    width: 12px;
+    background-color: #e9fde2;
+    border: 1px solid #2c70dd;
+    margin-top:10px;
+}
+
+/*瀹氫箟婊氬姩鏉¤建閬� 鍐呴槾褰�+鍦嗚*/
+::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(68, 50, 221, 0.3);
+    border-radius: 15px;
+    background-color: #e9fde2;
+}
+
+/*瀹氫箟婊戝潡 鍐呴槾褰�+鍦嗚*/
+::-webkit-scrollbar-thumb {
+    border-radius: 15px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+    background-color: #7396b0;
+}
+::-webkit-scrollbar-corner {
+    background-color: #385266;
+}
+/* Top area above thumb and below up button
+.datagrid-body::-webkit-scrollbar-track-piece:vertical:start {
+    background-image: url(../images/scroll-down.png);
+    margin-left: 1px;
+    background-repeat: no-repeat, repeat-y;
+}
+*/
+/* Bottom area below thumb and down button
+.datagrid-body::-webkit-scrollbar-track-piece:vertical:end {
+    background-image: url(../images/scroll-up.png);
+    background-repeat: no-repeat, repeat-y;
+    background-position: bottom left, 0 0;
+
+}
+*/
+
+.taskdiv {
+	width: 300px;
+	overflow: auto;
+	height: 120px;
+	background-color: #0F2A3B;
+}
+
+.tasktable_class {
+	width: 430px;
+	background-color: #0F2A3B;
+	overflow: auto;
+	height: auto;
+	border-collapse: collapse;
+}
+
+.tasktable_class tr {
+	height: 25px;
+}
+
+.taskthead_class {
+	color: #fff;
+	font-size: 12px;
+	background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgb(12, 41, 60)),
+		to(rgb(20, 70, 103)));
+}
+
+.taskthead_class td ,
+.tasktbody_class td {
+	color: rgb(135, 190, 210);
+	font-size: 12px;
+	border: 1px dotted rgb(50, 105, 115);
+}
+
+
+.datagrid-cell-c4-flno {
+	width: 80px
+}
+
+.datagrid-cell-c4-regn {
+	width: 80px
+}
+
+.datagrid-cell-c4-rtnm {
+	width: 80px
+}
+
+.datagrid-cell-c4-tenm {
+	width: 60px
+}
+
+.datagrid-cell-c4-tstn {
+	width: 50px
+}
+
+.datagrid-cell-c4-sdat {
+	width: 80px
+}
+
+.mqttStatus_open{
+    position: absolute;
+    width: 29px;
+    height: 10px;;
+    right: 40px;
+    bottom: 10px;
+    background-image: url("../images/websocket_open.png");
+}
+.mqttStatus_close{
+    position: absolute;
+    right: 40px;
+    width: 29px;
+    height: 10px;
+    bottom: 10px;
+    background-image: url("../images/websocket_close.png");
+}

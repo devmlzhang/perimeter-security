@@ -1,0 +1,242 @@
+* {
+	font-family: Microsoft YaHei;
+	scrollbar-arrow-color: #385266;  /*图6,三角箭头的颜色*/
+	scrollbar-face-color: #7396b0;  /*图5,立体滚动条的颜色*/
+	scrollbar-3dlight-color: #385266;  /*图1,立体滚动条亮边的颜色*/
+	scrollbar-highlight-color: #385266;  /*图2,滚动条空白部分的颜色*/
+	scrollbar-shadow-color: #7396b0;  /*图3,立体滚动条阴影的颜色*/
+	scrollbar-darkshadow-color: rgba(0,0,0,0.3);  /*图4,立体滚动条强阴影的颜色*/
+	scrollbar-track-color: #385266;  /*图7,立体滚动条背景颜色*/
+	
+	scrollbar-base-color:#0C293C;  /*滚动条的基本颜色*/
+	cursor: pointer;
+}
+.leftContent {width:66%;height:100%;float:left;border-right:1px solid #32546b;}
+.rightContent {height:60%;float:right;}
+.rightCharts {height:60%;width: 50%;float:right;margin-right:30px;border-top:5px}
+#searchTool {width:100%;overflow-y: auto;}
+#searchTool ul {padding:23px 0px 0px 25px;margin:0px;list-style:none;color:#60a2af;}
+#searchTool ul li {display: inline-block;width:165px;height:50px;margin-right:14px;margin-top:15px;}
+
+.input-text {
+	border: 1px solid #C3CED9;
+	border-radius: 5px 5px 5px 5px;
+	font-size: 13px;
+	height: 23px;
+	line-height: 23px;
+	margin-left: 10px;
+	padding: 0;
+	width: 100px;
+	background-color: #D0DADC;
+	color: #000;
+}
+
+.combo.datebox {
+	border: 1px solid #C3CED9;
+    border-radius: 5px 5px 5px 5px;
+    font-size: 13px;
+    height: 23px;
+    margin-left: 10px;
+    padding: 0;
+    width: 100px;
+    background-color: #D0DADC;
+}
+
+.combo-text.validatebox-text {
+	font-size: 13px;
+    border: 0px;
+    margin: 0;
+    padding: 0px;
+    color: #000;
+    background-color: #d0dadc;
+}
+
+#gridContainer {
+    position: absolute;
+	left: 0px;
+    right: 33%;
+/*     top: 100px; */
+    bottom: 0px;
+    margin: 3px 18px 4px 3px;
+}
+
+#shadow {z-index:2;position:absolute;top:0px;bottom:0px;left:0px;right:0px;filter:alpha(opacity=80);-moz-opacity:0.8;-khtml-opacity:0.8;opacity:0.8;background-color:#040D12;display:none;}
+.detailWinCss {z-index:10;position:absolute;width:730px;height:530px;background-color:#0F2A3B;display:none;}
+.detailWinCss>img {position:absolute;margin-top:-11px;right:-11px;cursor:pointer;width:23px;height:23px;}
+.detailWinCss>.d-top {width:100%;height:330px;border-bottom:1px solid #031625;}
+.detailWinCss>.d-bottom {width:100%;height:199px;}
+.detailWinCss>.d-top>.d-t-left {width:36%;height:100%;float:left;}
+.detailWinCss>.d-top>.d-t-right {float:right;padding: 38px 20px 0px 0px;}
+
+.detailWinCss>.d-top>.d-t-left ul {padding: 51px 0px 0px 47px;margin:0px;list-style:none;color:#d1d3d6;font-size:13px;}
+.detailWinCss>.d-top>.d-t-left ul li {padding:0px;margin:0px;height:23px;}
+
+.detailWinCss>.d-bottom .elastislide-horizontal {position:absolute;bottom:0px;top:331px;left:0px;right:0px;background-color:inherit;padding:17px 40px;}
+.detailWinCss>.d-bottom .elastislide-horizontal .elastislide-carousel {height: 100%;}
+.detailWinCss>.d-bottom #carousel {height: 155px;}
+.detailWinCss>.d-bottom #carousel li {height: 100%;width: 196px;margin-right: 21px;margin-left: 4px;}
+.detailWinCss>.d-bottom .elastislide-carousel ul li a {width: 100%;height: 100%;}
+.detailWinCss>.d-bottom .elastislide-carousel ul li a img {width: 100%;height: 100%;}
+
+
+.rightNavCss {
+	width: 350px;
+	margin: 0;
+	padding: 0;
+	color: #fff;
+	top: 67px;
+	bottom: 30px;
+	right: -350px;
+	position: absolute;
+}
+
+.rightNavCss>#right-orien {
+	position: absolute;
+	cursor: pointer;
+	left: -26px;
+	color: #05a2c4;
+	bottom: 4px;
+}
+
+.rightNavCss>#right-title {
+	width: 100%;
+	height: 30px;
+	background: linear-gradient(to top, #6fc4f6, #11344a);
+	color: #fff;
+	line-height: 30px;
+	padding-left: 8px;
+}
+
+.rightNavCss>#right-video {
+	background-color: #6fc4f6;
+	height: 232px;
+	width: 100%;
+	float: left;
+}
+
+.rightNavCss>#right-img {
+	height: 200px;
+	width: 100%;
+	float: left;
+	background-color: #7d6dff;
+}
+
+.rightNavCss>#right-img span {
+	font-size: 22px;
+	top: 50%;
+	margin-top: -12px;
+	cursor: pointer;
+}
+
+#slides {
+	display: none
+}
+
+#slides .slidesjs-navigation {
+	margin-top:5px;
+}
+
+.slidesjs-container {
+	border-bottom: 1px solid #0f2a3b;
+}
+
+a.slidesjs-next,
+a.slidesjs-previous,
+a.slidesjs-play,
+a.slidesjs-stop {
+	background-image: url(../images/slides/btns-next-prev.png);
+	background-repeat: no-repeat;
+	display:block;
+	width:12px;
+	height:18px;
+	overflow: hidden;
+	text-indent: -9999px;
+	float: left;
+	margin-right:5px;
+}
+
+a.slidesjs-next {
+	margin-right:10px;
+	background-position: -12px 0;
+}
+
+a:hover.slidesjs-next {
+	background-position: -12px -18px;
+}
+
+a.slidesjs-previous {
+	background-position: 0 0;
+}
+
+a:hover.slidesjs-previous {
+	background-position: 0 -18px;
+}
+
+a.slidesjs-play {
+	width:15px;
+	background-position: -25px 0;
+}
+
+a:hover.slidesjs-play {
+	background-position: -25px -18px;
+}
+
+a.slidesjs-stop {
+	width:18px;
+	background-position: -41px 0;
+}
+
+a:hover.slidesjs-stop {
+	background-position: -41px -18px;
+}
+
+.slidesjs-pagination {
+	margin: 7px 0 0;
+	float: right;
+	list-style: none;
+}
+
+.slidesjs-pagination li {
+	float: left;
+	margin: 0 1px;
+}
+
+.slidesjs-pagination li a {
+	display: block;
+	width: 13px;
+	height: 0;
+	padding-top: 13px;
+	background-image: url(../images/slides/pagination.png);
+	background-position: 0 0;
+	float: left;
+	overflow: hidden;
+}
+
+.slidesjs-pagination li a.active,
+.slidesjs-pagination li a:hover.active {
+	background-position: 0 -13px
+}
+
+.slidesjs-pagination li a:hover {
+	background-position: 0 -26px
+}
+
+#slides a:link,
+#slides a:visited {
+	color: #333
+}
+
+#slides a:hover,
+#slides a:active {
+	color: #9e2020
+}
+
+.navbar {
+	overflow: hidden
+}
+
+
+.rightNavCss>#right-grid {
+	float: left;
+	width: 100%;
+}
