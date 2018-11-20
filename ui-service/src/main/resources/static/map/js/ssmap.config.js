@@ -9,8 +9,8 @@ var MapConfig = {
 			extent:[12971614.984,4876701.592,12984712.067999998,4883250.134],
 			layers : [ {
 				name : "机场",
-                //tileUrl: mapResUrl + "tiles/pek/{z}/{y}/{x}.png"
-                tileUrl: "http://172.16.10.111/map/pek/1.0.6/tiles/{z}/{y}/{x}.png"
+                tileUrl: mapResUrl + "tiles/pek/{z}/{y}/{x}.png"
+                //tileUrl: "http://172.16.10.111/map/pek/1.0.6/tiles/{z}/{y}/{x}.png"
 			} ],
 			maxResolution : 9.554628535647031,
 			numZoomLevels : 6,

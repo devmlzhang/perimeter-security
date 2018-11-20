@@ -28,10 +28,6 @@ public class AlarmController {
 
 
 
-    @Value("${fileName}")
-    private String fileName;
-    @Value("${filePath}")
-    private String filePath;
 
 
 
